@@ -15,21 +15,41 @@
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
   body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 20% 20%, rgba(212,168,83,0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(168,196,232,0.04) 0%, transparent 60%); pointer-events: none; z-index: 0; }
   .app { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; }
-  header { text-align: center; margin-bottom: 48px; }
+
+  /* Username screen */
+  .username-screen { position: fixed; inset: 0; background: var(--bg); z-index: 400; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .username-screen.hidden { display: none; }
+  .username-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 48px 40px; max-width: 380px; width: 100%; text-align: center; }
+  .username-box .logo { font-family: 'Playfair Display', serif; font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+  .username-box h2 { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--text); margin-bottom: 10px; }
+  .username-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
+  .username-box input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; text-align: center; margin-bottom: 14px; transition: border-color 0.2s; }
+  .username-box input:focus { border-color: var(--accent); }
+  .username-box button { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #0e0e0f; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+  .username-box button:hover { opacity: 0.9; }
+
+  header { text-align: center; margin-bottom: 32px; }
   .logo { font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
-  h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 48px); font-weight: 700; color: var(--text); line-height: 1.1; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 44px); font-weight: 700; color: var(--text); line-height: 1.1; }
   h1 em { font-style: italic; color: var(--accent); }
-  .subtitle { margin-top: 10px; font-size: 14px; color: var(--text-muted); font-weight: 300; letter-spacing: 0.02em; }
-  .sync-bar { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; font-size: 12px; color: var(--text-muted); }
+  .subtitle { margin-top: 10px; font-size: 14px; color: var(--text-muted); font-weight: 300; }
+
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .sync-bar { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
   .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); transition: background 0.3s; }
   .sync-dot.ok { background: #7ae8a0; }
   .sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
   .sync-dot.error { background: #e87a7a; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .user-pill { font-size: 12px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 5px 14px; cursor: pointer; transition: border-color 0.2s; }
+  .user-pill:hover { border-color: var(--accent); color: var(--accent); }
+  .user-pill span { color: var(--accent); font-weight: 600; }
+
   .nav-tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 4px; margin-bottom: 40px; width: fit-content; margin-left: auto; margin-right: auto; }
-  .nav-tab { padding: 9px 22px; border-radius: 10px; border: none; background: transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .nav-tab { padding: 9px 20px; border-radius: 10px; border: none; background: transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
   .nav-tab.active { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
   .view { display: none; } .view.active { display: block; }
+
   .controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 28px; flex-wrap: wrap; align-items: center; }
   .toggle-btn { padding: 9px 20px; border-radius: 100px; border: 1.5px solid var(--border); background: transparent; color: var(--text-soft); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
   .toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -38,15 +58,18 @@
   .toggle-btn.sub.active { background: rgba(212,168,83,0.15); color: var(--accent); border-style: solid; }
   .cat-breadcrumb { display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 12px; font-size: 12px; color: var(--text-muted); min-height: 20px; }
   .cat-breadcrumb span { color: var(--accent); font-weight: 500; }
+
   .stats { display: flex; gap: 24px; justify-content: center; margin-bottom: 36px; }
   .stat { text-align: center; }
   .stat-num { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--accent); }
   .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-top: 2px; }
   .stat-divider { width: 1px; background: var(--border); align-self: stretch; }
+
   .progress-wrap { margin-bottom: 40px; }
   .progress-bar { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.5s ease; }
   .progress-text { text-align: right; font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
   .card-area { perspective: 1200px; margin-bottom: 32px; }
   .card { position: relative; width: 100%; min-height: 320px; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
   .card.flipped { transform: rotateY(180deg); }
@@ -57,6 +80,13 @@
   .card-lang-badge { position: absolute; top: 20px; left: 24px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; padding: 4px 10px; border-radius: 100px; border: 1px solid; }
   .badge-viet { color: var(--viet); border-color: rgba(232,201,122,0.25); background: rgba(232,201,122,0.06); }
   .badge-fr { color: var(--fr); border-color: rgba(168,196,232,0.25); background: rgba(168,196,232,0.06); }
+
+  /* Score pips on card */
+  .score-pips { position: absolute; top: 20px; right: 24px; display: flex; gap: 4px; }
+  .pip { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+  .pip.green { background: #7ae8a0; }
+  .pip.red { background: #e87a7a; }
+
   .card-word { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 42px); font-weight: 700; text-align: center; line-height: 1.2; margin-bottom: 12px; }
   .card-front .card-word { color: var(--viet); } .card-back .card-word { color: var(--fr); }
   .card-romanization { font-size: 15px; color: var(--text-muted); font-style: italic; margin-bottom: 8px; font-family: 'Playfair Display', serif; }
@@ -65,15 +95,18 @@
   .audio-btn { margin-top: 20px; display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--text-soft); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; }
   .audio-btn:hover, .audio-btn.playing { border-color: var(--accent); color: var(--accent); background: rgba(212,168,83,0.08); }
   .audio-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
   .actions { display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; }
   .btn { flex: 1; max-width: 180px; padding: 14px 24px; border-radius: var(--radius); border: 1.5px solid var(--border); background: transparent; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
   .btn-wrong { color: #e87a7a; border-color: rgba(232,122,122,0.3); } .btn-wrong:hover { background: rgba(232,122,122,0.1); border-color: #e87a7a; }
   .btn-correct { color: #7ae8a0; border-color: rgba(122,232,160,0.3); } .btn-correct:hover { background: rgba(122,232,160,0.1); border-color: #7ae8a0; }
   .btn-skip { color: var(--text-muted); border-color: var(--border); max-width: 100px; }
+
   .section-sep { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
   .section-sep span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); white-space: nowrap; }
   .sep-line { flex: 1; height: 1px; background: var(--border); }
-  .add-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 32px; }
+
+  .add-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 16px; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
@@ -91,20 +124,38 @@
   .audio-filename { font-size: 12px; color: var(--text-soft); font-style: italic; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .btn-add { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #0e0e0f; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
   .btn-add:hover { opacity: 0.9; }
+
+  /* CSV import */
+  .csv-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; }
+  .csv-drop { border: 2px dashed var(--border); border-radius: 12px; padding: 28px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
+  .csv-drop:hover, .csv-drop.drag { border-color: var(--accent); background: rgba(212,168,83,0.04); }
+  .csv-drop p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .csv-drop p strong { color: var(--accent); }
+  #csvFileInput { display: none; }
+  .csv-preview { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; margin-bottom: 16px; }
+  .csv-row { display: flex; gap: 12px; padding: 8px 12px; background: var(--surface2); border-radius: 8px; font-size: 13px; }
+  .csv-row .cv { color: var(--viet); min-width: 100px; font-family: 'Playfair Display', serif; }
+  .csv-row .cf { color: var(--text-soft); flex: 1; }
+  .csv-row .cc { color: var(--text-muted); font-size: 11px; }
+  .btn-import { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-import:hover { background: rgba(212,168,83,0.1); }
+
   .word-list { display: flex; flex-direction: column; gap: 8px; }
-  .word-item { display: flex; align-items: center; gap: 16px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; }
+  .word-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; }
   .word-item:hover { border-color: rgba(212,168,83,0.2); }
-  .word-viet { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--viet); min-width: 120px; }
-  .word-fr { font-size: 14px; color: var(--text-soft); flex: 1; }
+  .word-score { display: flex; gap: 3px; flex-shrink: 0; }
+  .word-viet { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--viet); min-width: 110px; }
+  .word-fr { font-size: 13px; color: var(--text-soft); flex: 1; }
   .word-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 3px 8px; border: 1px solid var(--border); border-radius: 100px; white-space: nowrap; }
-  .word-actions { display: flex; gap: 8px; }
+  .word-actions { display: flex; gap: 6px; }
   .word-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 6px; transition: color 0.2s; display: flex; align-items: center; }
   .word-btn:hover { color: var(--accent); } .word-btn.delete:hover { color: #e87a7a; }
   .word-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
   .cat-manager { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; }
   .cat-tree { display: flex; flex-direction: column; gap: 12px; }
   .cat-main-row { display: flex; align-items: center; gap: 10px; }
-  .cat-main-label { font-size: 13px; font-weight: 600; color: var(--accent); min-width: 100px; text-transform: capitalize; }
+  .cat-main-label { font-size: 13px; font-weight: 600; color: var(--accent); min-width: 110px; text-transform: capitalize; }
   .cat-subs { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
   .sub-tag { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; border: 1px solid var(--border); background: var(--surface2); font-size: 12px; color: var(--text-soft); }
   .sub-tag button { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 14px; line-height: 1; padding: 0; transition: color 0.2s; }
@@ -113,17 +164,20 @@
   .add-sub-inline input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; width: 130px; transition: border-color 0.2s; }
   .add-sub-inline input:focus { border-color: var(--accent); }
   .add-sub-inline button { padding: 5px 12px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
   .loading-screen { text-align: center; padding: 80px 40px; }
   .loading-screen p { color: var(--text-muted); font-size: 14px; margin-top: 16px; }
   .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .empty-card { text-align: center; padding: 60px 40px; color: var(--text-muted); }
   .empty-card p { font-size: 14px; line-height: 1.6; }
-  .completed { text-align: center; padding: 80px 40px; }
+  .completed { text-align: center; padding: 60px 40px; }
   .completed h2 { font-family: 'Playfair Display', serif; font-size: 36px; color: var(--accent); margin-bottom: 12px; }
-  .completed p { color: var(--text-muted); font-size: 15px; margin-bottom: 32px; }
+  .completed p { color: var(--text-muted); font-size: 15px; margin-bottom: 8px; }
+  .completed .score-recap { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
   .btn-restart { padding: 14px 32px; border-radius: 100px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.2s; }
   .btn-restart:hover { background: var(--accent); color: #0e0e0f; }
+
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; width: 100%; max-width: 500px; transform: translateY(20px); transition: transform 0.2s; }
@@ -132,28 +186,47 @@
   .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
   .btn-modal-save { flex: 1; padding: 12px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #0e0e0f; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
   .btn-modal-cancel { padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; }
-  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); border-radius: 100px; padding: 12px 24px; font-size: 13px; color: var(--text-soft); transition: transform 0.3s ease; z-index: 100; }
+
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); border-radius: 100px; padding: 12px 24px; font-size: 13px; color: var(--text-soft); transition: transform 0.3s ease; z-index: 500; }
   .toast.show { transform: translateX(-50%) translateY(0); }
   @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .actions { flex-wrap: wrap; } .btn { max-width: none; } }
 </style>
 </head>
 <body>
+
+<!-- Username screen -->
+<div class="username-screen" id="username-screen">
+  <div class="username-box">
+    <div class="logo">Học tiếng Việt</div>
+    <h2>Qui es-tu ?</h2>
+    <p>Choisis un pseudo pour suivre ta progression.<br>Utilise le même sur tous tes appareils.</p>
+    <input type="text" id="username-input" placeholder="ton prénom..." maxlength="20" onkeydown="if(event.key==='Enter')confirmUsername()" />
+    <button onclick="confirmUsername()">Commencer →</button>
+  </div>
+</div>
+
 <div class="app">
   <header>
     <div class="logo">Học tiếng Việt</div>
     <h1>Mes <em>flashcards</em><br>vietnamiennes</h1>
-    <p class="subtitle">Répétition espacée · Audio natif · Synchronisé</p>
+    <p class="subtitle">Répétition espacée · Audio · Synchronisé</p>
   </header>
-  <div class="sync-bar">
-    <div class="sync-dot syncing" id="sync-dot"></div>
-    <span id="sync-label">Connexion...</span>
+
+  <div class="top-bar">
+    <div class="sync-bar">
+      <div class="sync-dot syncing" id="sync-dot"></div>
+      <span id="sync-label">Connexion...</span>
+    </div>
+    <div class="user-pill" onclick="changeUser()" id="user-pill">👤 <span id="user-display">...</span></div>
   </div>
+
   <nav class="nav-tabs">
     <button class="nav-tab active" onclick="switchView('study', this)">Étudier</button>
     <button class="nav-tab" onclick="switchView('manage', this)">Mes mots</button>
     <button class="nav-tab" onclick="switchView('categories', this)">Catégories</button>
   </nav>
 
+  <!-- STUDY -->
   <div class="view active" id="view-study">
     <div class="controls" id="mode-controls">
       <button class="toggle-btn active" id="btn-viet-fr" onclick="setMode('viet-fr')">🇻🇳 → 🇫🇷</button>
@@ -177,6 +250,7 @@
     <div id="study-area"><div class="loading-screen"><div class="spinner"></div><p>Chargement...</p></div></div>
   </div>
 
+  <!-- MANAGE -->
   <div class="view" id="view-manage">
     <div class="add-section">
       <div class="section-sep" style="margin-bottom:24px"><div class="sep-line"></div><span>Ajouter un mot</span><div class="sep-line"></div></div>
@@ -196,12 +270,30 @@
       </div>
       <button class="btn-add" onclick="addWord()">Ajouter la carte</button>
     </div>
+
+    <!-- CSV Import -->
+    <div class="csv-section">
+      <div class="section-sep" style="margin-bottom:20px"><div class="sep-line"></div><span>Importer plusieurs mots (CSV)</span><div class="sep-line"></div></div>
+      <div class="csv-drop" id="csv-drop" onclick="document.getElementById('csvFileInput').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleCsvDrop(event)">
+        <p>📄 Clique ou glisse un fichier <strong>.csv</strong><br><br>
+        Format : <strong>vietnamien, français, romanisation, catégorie, sous-catégorie</strong><br>
+        <small style="opacity:.6">Exemple : Xin chào, Bonjour, sin tchào, expressions,</small></p>
+      </div>
+      <input type="file" id="csvFileInput" accept=".csv" onchange="handleCsvFile(this)" />
+      <div id="csv-preview" class="csv-preview" style="display:none"></div>
+      <button class="btn-import" id="btn-import" style="display:none" onclick="importCsv()">Importer les mots</button>
+    </div>
+
     <div class="controls" style="justify-content:flex-start;margin-bottom:16px" id="manage-main-filters"></div>
     <div class="controls" style="justify-content:flex-start;margin-bottom:20px" id="manage-sub-filters"></div>
     <div class="section-sep"><div class="sep-line"></div><span>Mes cartes (<span id="word-count">0</span>)</span><div class="sep-line"></div></div>
     <div class="word-list" id="word-list"></div>
   </div>
 
+  <!-- CATEGORIES -->
   <div class="view" id="view-categories">
     <div class="cat-manager">
       <div class="section-sep" style="margin-bottom:20px"><div class="sep-line"></div><span>Gérer les catégories</span><div class="sep-line"></div></div>
@@ -210,6 +302,7 @@
   </div>
 </div>
 
+<!-- Edit Modal -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
     <div class="modal-title">Modifier la carte</div>
@@ -226,11 +319,12 @@
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDeu2oIs5ZMhCniCuCZmG0tz1MT8p_-2ho",
@@ -244,9 +338,13 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
 
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
 const FIXED_CATS = ['verbes', 'expressions', 'vocabulaire'];
 let categories = [];
 let words = [];
+let scores = {}; // { wordId: number } personal scores
 let audioFiles = {};
 let mode = 'viet-fr';
 let activeCatMain = 'tout', activeCatSub = '';
@@ -255,22 +353,96 @@ let selectedMainCat = '', selectedSubCat = '';
 let editSelectedMain = '', editSelectedSub = '';
 let deck = [], currentIndex = 0, correct = 0, wrong = 0;
 let currentAudio = null, editingId = null, dbReady = false;
+let username = localStorage.getItem('viet_username') || '';
+let csvParsed = [];
 
+// ═══════════════════════════════════════════
+// USERNAME
+// ═══════════════════════════════════════════
+function initUsername() {
+  if (username) {
+    document.getElementById('username-screen').classList.add('hidden');
+    document.getElementById('user-display').textContent = username;
+    loadScores();
+  }
+}
+
+window.confirmUsername = () => {
+  const val = document.getElementById('username-input').value.trim();
+  if (!val) return;
+  username = val;
+  localStorage.setItem('viet_username', username);
+  document.getElementById('username-screen').classList.add('hidden');
+  document.getElementById('user-display').textContent = username;
+  loadScores();
+};
+
+window.changeUser = () => {
+  const newName = prompt('Changer de pseudo :', username);
+  if (newName && newName.trim()) {
+    username = newName.trim();
+    localStorage.setItem('viet_username', username);
+    document.getElementById('user-display').textContent = username;
+    loadScores();
+    showToast('Pseudo changé !');
+  }
+};
+
+// ═══════════════════════════════════════════
+// SCORES (stored per user in Firestore)
+// scores/{username}/words/{wordId} = { score: number }
+// ═══════════════════════════════════════════
+async function loadScores() {
+  if (!username) return;
+  onSnapshot(collection(db, 'scores', username, 'words'), snap => {
+    scores = {};
+    snap.docs.forEach(d => { scores[d.id] = d.data().score || 0; });
+    renderAll();
+  });
+}
+
+async function updateScore(wordId, delta) {
+  if (!username) return;
+  const current = scores[wordId] || 0;
+  const next = Math.max(-5, Math.min(10, current + delta));
+  scores[wordId] = next;
+  await setDoc(doc(db, 'scores', username, 'words', wordId), { score: next });
+}
+
+function getScore(wordId) { return scores[wordId] || 0; }
+
+function scorePips(wordId) {
+  const s = getScore(wordId);
+  const total = 5;
+  const green = Math.max(0, Math.min(total, s));
+  const red = Math.max(0, Math.min(total, -s));
+  let html = '';
+  for (let i = 0; i < total; i++) {
+    if (s >= 0) html += `<div class="pip ${i < green ? 'green' : ''}"></div>`;
+    else html += `<div class="pip ${i < red ? 'red' : ''}"></div>`;
+  }
+  return `<div class="score-pips">${html}</div>`;
+}
+
+// ═══════════════════════════════════════════
+// SYNC STATUS
+// ═══════════════════════════════════════════
 function setSyncStatus(s) {
   document.getElementById('sync-dot').className = 'sync-dot ' + s;
   document.getElementById('sync-label').textContent = s === 'ok' ? 'Synchronisé' : s === 'syncing' ? 'Synchronisation...' : 'Hors ligne';
 }
 
-// Listeners
+// ═══════════════════════════════════════════
+// FIRESTORE LISTENERS
+// ═══════════════════════════════════════════
 onSnapshot(collection(db, 'words'), async snap => {
   if (snap.empty && !dbReady) {
-    // Seed mots par défaut dans Firebase au premier lancement
     const defaults = [
-      { viet: 'Xin chào', fr: 'Bonjour', roman: 'sin tchào', main: 'phrases', sub: '', audio: null, createdAt: Date.now() },
-      { viet: 'Cảm ơn', fr: 'Merci', roman: 'gàm ơn', main: 'phrases', sub: '', audio: null, createdAt: Date.now() },
-      { viet: 'Tạm biệt', fr: 'Au revoir', roman: 'tàm biệt', main: 'phrases', sub: '', audio: null, createdAt: Date.now() },
-      { viet: 'Vâng', fr: 'Oui', roman: 'vâng', main: 'phrases', sub: '', audio: null, createdAt: Date.now() },
-      { viet: 'Không', fr: 'Non', roman: 'khong', main: 'phrases', sub: '', audio: null, createdAt: Date.now() },
+      { viet: 'Xin chào', fr: 'Bonjour', roman: 'sin tchào', main: 'expressions', sub: '', audio: null, createdAt: Date.now() },
+      { viet: 'Cảm ơn', fr: 'Merci', roman: 'gàm ơn', main: 'expressions', sub: '', audio: null, createdAt: Date.now() },
+      { viet: 'Tạm biệt', fr: 'Au revoir', roman: 'tàm biệt', main: 'expressions', sub: '', audio: null, createdAt: Date.now() },
+      { viet: 'Vâng', fr: 'Oui', roman: 'vâng', main: 'expressions', sub: '', audio: null, createdAt: Date.now() },
+      { viet: 'Không', fr: 'Non', roman: 'khong', main: 'expressions', sub: '', audio: null, createdAt: Date.now() },
       { viet: 'Gia đình', fr: 'Famille', roman: 'gia dinh', main: 'vocabulaire', sub: 'famille', audio: null, createdAt: Date.now() },
       { viet: 'Mẹ', fr: 'Maman', roman: 'mè', main: 'vocabulaire', sub: 'famille', audio: null, createdAt: Date.now() },
       { viet: 'Bố', fr: 'Papa', roman: 'bố', main: 'vocabulaire', sub: 'famille', audio: null, createdAt: Date.now() },
@@ -290,7 +462,7 @@ onSnapshot(collection(db, 'categories'), async snap => {
   if (snap.empty) {
     const defaults = [
       { main: 'verbes', subs: [] },
-      { main: 'phrases', subs: [] },
+      { main: 'expressions', subs: [] },
       { main: 'vocabulaire', subs: ['famille', 'nourriture', 'couleurs', 'chiffres'] }
     ];
     for (const c of defaults) await setDoc(doc(db, 'categories', c.main), c);
@@ -302,7 +474,7 @@ onSnapshot(collection(db, 'categories'), async snap => {
 });
 
 function renderAll() {
-  if (!dbReady) return;
+  if (!dbReady || !username) return;
   renderStudyCatFilters();
   startSession();
   renderWordList();
@@ -312,7 +484,9 @@ function renderAll() {
   if (document.getElementById('view-categories').classList.contains('active')) renderCatTree();
 }
 
-// Nav
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
 window.switchView = (v, el) => {
   document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
@@ -323,7 +497,6 @@ window.switchView = (v, el) => {
   if (v === 'categories') renderCatTree();
 };
 
-// Mode
 window.setMode = m => {
   mode = m;
   document.querySelectorAll('#mode-controls .toggle-btn').forEach(b => b.classList.remove('active'));
@@ -331,10 +504,11 @@ window.setMode = m => {
   startSession();
 };
 
-// Study filters
+// ═══════════════════════════════════════════
+// STUDY FILTERS
+// ═══════════════════════════════════════════
 function renderStudyCatFilters() {
-  const mainEl = document.getElementById('main-cat-filters');
-  if (!mainEl) return;
+  const mainEl = document.getElementById('main-cat-filters'); if (!mainEl) return;
   mainEl.innerHTML = ['tout', ...categories.map(c => c.main)].map(m =>
     `<button class="toggle-btn ${activeCatMain === m ? 'active' : ''}" onclick="setStudyMain('${m}')">${m === 'tout' ? 'Tout' : m}</button>`).join('');
   const subEl = document.getElementById('sub-cat-filters');
@@ -350,7 +524,9 @@ function renderStudyCatFilters() {
 window.setStudyMain = m => { activeCatMain = m; activeCatSub = ''; renderStudyCatFilters(); startSession(); };
 window.setStudySub = s => { activeCatSub = s === 'tout' ? '' : s; renderStudyCatFilters(); startSession(); };
 
-// Session
+// ═══════════════════════════════════════════
+// SESSION — sorted by score (lowest first)
+// ═══════════════════════════════════════════
 function getFiltered() {
   return words.filter(w => {
     if (activeCatMain === 'tout') return true;
@@ -359,16 +535,21 @@ function getFiltered() {
     return true;
   });
 }
+
 function startSession() {
-  deck = shuffle([...getFiltered()]);
+  // Sort: lowest score first, shuffle within same score group
+  const filtered = getFiltered();
+  filtered.sort((a, b) => {
+    const sa = getScore(a._id), sb = getScore(b._id);
+    if (sa !== sb) return sa - sb;
+    return Math.random() - 0.5;
+  });
+  deck = filtered;
   currentIndex = 0; correct = 0; wrong = 0;
   updateStats(); renderCard();
 }
 window.startSession = startSession;
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
-  return arr;
-}
+
 function updateStats() {
   document.getElementById('stat-correct').textContent = correct;
   document.getElementById('stat-wrong').textContent = wrong;
@@ -377,12 +558,15 @@ function updateStats() {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent = currentIndex + ' / ' + deck.length;
 }
+
 function renderCard() {
-  const area = document.getElementById('study-area');
-  if (!area) return;
+  const area = document.getElementById('study-area'); if (!area) return;
   if (!dbReady) { area.innerHTML = `<div class="loading-screen"><div class="spinner"></div><p>Chargement...</p></div>`; return; }
   if (!deck.length) { area.innerHTML = `<div class="empty-card"><p>Aucun mot ici.<br>Ajoute des mots dans <strong>Mes mots</strong>.</p></div>`; return; }
-  if (currentIndex >= deck.length) { area.innerHTML = `<div class="completed"><h2>Terminé !</h2><p>${correct} connus · ${wrong} à revoir</p><button class="btn-restart" onclick="startSession()">Recommencer</button></div>`; return; }
+  if (currentIndex >= deck.length) {
+    area.innerHTML = `<div class="completed"><h2>Terminé !</h2><p>${correct} connus · ${wrong} à revoir</p><p class="score-recap">Les mots difficiles reviendront en priorité la prochaine fois.</p><button class="btn-restart" onclick="startSession()">Recommencer</button></div>`;
+    return;
+  }
   const w = deck[currentIndex];
   const em = mode === 'random' ? (Math.random() > 0.5 ? 'viet-fr' : 'fr-viet') : mode;
   const sv = em === 'viet-fr';
@@ -392,6 +576,7 @@ function renderCard() {
     <div class="card-area"><div class="card" id="flashcard" onclick="flipCard()">
       <div class="card-face card-front">
         <div class="card-lang-badge ${sv ? 'badge-viet' : 'badge-fr'}">${sv ? 'Vietnamien' : 'Français'}</div>
+        ${scorePips(w._id)}
         <div class="card-word">${sv ? w.viet : w.fr}</div>
         ${sv && w.roman ? `<div class="card-romanization">${w.roman}</div>` : ''}
         <div class="card-category">${cat}</div>
@@ -413,31 +598,132 @@ function renderCard() {
       <button class="btn btn-correct" onclick="answer(true)">✓ Connu</button>
     </div>`;
 }
-window.flipCard = () => document.getElementById('flashcard').classList.toggle('flipped');
-window.answer = result => { if (result === true) correct++; else if (result === false) wrong++; currentIndex++; updateStats(); renderCard(); };
 
-// Audio
+window.flipCard = () => document.getElementById('flashcard').classList.toggle('flipped');
+
+window.answer = async result => {
+  const w = deck[currentIndex];
+  if (result === true) { correct++; await updateScore(w._id, +1); }
+  else if (result === false) { wrong++; await updateScore(w._id, -1); }
+  currentIndex++; updateStats(); renderCard();
+};
+
+// ═══════════════════════════════════════════
+// AUDIO — force Vietnamese voice
+// ═══════════════════════════════════════════
 window.playAudio = (e, id, text) => {
   e.stopPropagation();
   const btn = document.getElementById('play-btn');
   if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-  currentAudio = audioFiles[id] ? new Audio(audioFiles[id]) : new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=vi&client=tw-ob`);
-  if (btn) btn.classList.add('playing');
-  currentAudio.play().catch(() => { const u = new SpeechSynthesisUtterance(text); u.lang = 'vi-VN'; speechSynthesis.speak(u); });
-  currentAudio.onended = () => { if (btn) btn.classList.remove('playing'); };
+  if (audioFiles[id]) {
+    currentAudio = new Audio(audioFiles[id]);
+    if (btn) btn.classList.add('playing');
+    currentAudio.play();
+    currentAudio.onended = () => { if (btn) btn.classList.remove('playing'); };
+  } else {
+    // Web Speech API with Vietnamese voice
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'vi-VN';
+      // Try to find a Vietnamese voice
+      const voices = speechSynthesis.getVoices();
+      const viVoice = voices.find(v => v.lang.startsWith('vi'));
+      if (viVoice) utter.voice = viVoice;
+      utter.rate = 0.85;
+      if (btn) btn.classList.add('playing');
+      utter.onend = () => { if (btn) btn.classList.remove('playing'); };
+      speechSynthesis.speak(utter);
+    }
+  }
 };
+
+// Wait for voices to load then re-enable audio
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = () => {};
+}
+
 window.playWordAudio = (id, text) => {
   if (currentAudio) currentAudio.pause();
-  if (audioFiles[id]) { currentAudio = new Audio(audioFiles[id]); currentAudio.play(); }
-  else { const u = new SpeechSynthesisUtterance(text); u.lang = 'vi-VN'; speechSynthesis.speak(u); }
+  if (audioFiles[id]) { currentAudio = new Audio(audioFiles[id]); currentAudio.play(); return; }
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'vi-VN';
+  const voices = speechSynthesis.getVoices();
+  const viVoice = voices.find(v => v.lang.startsWith('vi'));
+  if (viVoice) utter.voice = viVoice;
+  utter.rate = 0.85;
+  speechSynthesis.speak(utter);
 };
+
 window.handleAudioFile = input => {
   const f = input.files[0]; if (!f) return;
   document.getElementById('audio-filename').textContent = f.name;
   window._pendingAudioFile = f; window._pendingAudioName = f.name;
 };
 
-// Manage filters
+// ═══════════════════════════════════════════
+// CSV IMPORT
+// ═══════════════════════════════════════════
+function parseCSV(text) {
+  const lines = text.trim().split('\n').filter(l => l.trim());
+  return lines.map(line => {
+    const parts = line.split(',').map(p => p.trim());
+    return {
+      viet: parts[0] || '',
+      fr: parts[1] || '',
+      roman: parts[2] || '',
+      main: (parts[3] || 'expressions').toLowerCase(),
+      sub: (parts[4] || '').toLowerCase()
+    };
+  }).filter(r => r.viet && r.fr);
+}
+
+window.handleCsvFile = input => {
+  const f = input.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = e => previewCsv(e.target.result);
+  reader.readAsText(f);
+};
+
+window.handleCsvDrop = e => {
+  e.preventDefault();
+  document.getElementById('csv-drop').classList.remove('drag');
+  const f = e.dataTransfer.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => previewCsv(ev.target.result);
+  reader.readAsText(f);
+};
+
+function previewCsv(text) {
+  csvParsed = parseCSV(text);
+  if (!csvParsed.length) { showToast('Fichier vide ou mal formaté'); return; }
+  const preview = document.getElementById('csv-preview');
+  const btn = document.getElementById('btn-import');
+  preview.style.display = '';
+  btn.style.display = '';
+  btn.textContent = `Importer ${csvParsed.length} mot${csvParsed.length > 1 ? 's' : ''}`;
+  preview.innerHTML = csvParsed.slice(0, 8).map(r =>
+    `<div class="csv-row"><div class="cv">${r.viet}</div><div class="cf">${r.fr}</div><div class="cc">${r.main}${r.sub ? ' › ' + r.sub : ''}</div></div>`
+  ).join('') + (csvParsed.length > 8 ? `<div class="csv-row" style="color:var(--text-muted);font-size:12px">... et ${csvParsed.length - 8} autres</div>` : '');
+}
+
+window.importCsv = async () => {
+  if (!csvParsed.length) return;
+  setSyncStatus('syncing');
+  for (const w of csvParsed) {
+    await addDoc(collection(db, 'words'), { ...w, audio: null, createdAt: Date.now() });
+  }
+  csvParsed = [];
+  document.getElementById('csv-preview').style.display = 'none';
+  document.getElementById('btn-import').style.display = 'none';
+  document.getElementById('csvFileInput').value = '';
+  showToast(`Mots importés !`);
+};
+
+// ═══════════════════════════════════════════
+// MANAGE FILTERS
+// ═══════════════════════════════════════════
 function renderManageCatFilters() {
   const mainEl = document.getElementById('manage-main-filters'); if (!mainEl) return;
   mainEl.innerHTML = ['tout', ...categories.map(c => c.main)].map(m =>
@@ -452,7 +738,9 @@ function renderManageCatFilters() {
 window.setManageMain = m => { manageCatMain = m; manageCatSub = ''; renderManageCatFilters(); renderWordList(); };
 window.setManageSub = s => { manageCatSub = s === 'tout' ? '' : s; renderManageCatFilters(); renderWordList(); };
 
-// Cat picker
+// ═══════════════════════════════════════════
+// WORD FORM
+// ═══════════════════════════════════════════
 function renderMainCatPicker(sel) {
   sel = sel !== undefined ? sel : selectedMainCat;
   const el = document.getElementById('main-cat-picker'); if (!el) return;
@@ -461,8 +749,7 @@ function renderMainCatPicker(sel) {
 window.pickMainCat = m => {
   selectedMainCat = m; selectedSubCat = ''; renderMainCatPicker(m);
   const catObj = categories.find(c => c.main === m);
-  const grp = document.getElementById('sub-cat-group');
-  const sp = document.getElementById('sub-cat-picker');
+  const grp = document.getElementById('sub-cat-group'), sp = document.getElementById('sub-cat-picker');
   if (catObj && catObj.subs.length > 0) {
     grp.style.display = '';
     sp.innerHTML = catObj.subs.map(s => `<button class="cat-pill" onclick="pickSubCat('${s}')">${s}</button>`).join('');
@@ -473,7 +760,6 @@ window.pickSubCat = s => {
   document.getElementById('sub-cat-picker').querySelectorAll('.cat-pill').forEach(p => p.classList.toggle('selected', p.textContent.trim() === s));
 };
 
-// Add word
 window.addWord = async () => {
   const viet = document.getElementById('inp-viet').value.trim();
   const fr = document.getElementById('inp-fr').value.trim();
@@ -497,7 +783,9 @@ window.addWord = async () => {
   showToast('Carte ajoutée !');
 };
 
-// Word list
+// ═══════════════════════════════════════════
+// WORD LIST
+// ═══════════════════════════════════════════
 function renderWordList() {
   const filtered = words.filter(w => {
     if (manageCatMain === 'tout') return true;
@@ -510,7 +798,10 @@ function renderWordList() {
   list.innerHTML = filtered.map(w => {
     const cat = w.sub ? `${w.main} › ${w.sub}` : w.main;
     const safe = (w.viet || '').replace(/'/g, "\\'");
+    const s = getScore(w._id);
+    const scoreColor = s > 0 ? '#7ae8a0' : s < 0 ? '#e87a7a' : 'var(--text-muted)';
     return `<div class="word-item">
+      <div style="font-size:11px;color:${scoreColor};min-width:24px;text-align:center;font-weight:600">${s > 0 ? '+' : ''}${s}</div>
       <div class="word-viet">${w.viet}</div>
       <div class="word-fr">${w.fr}</div>
       <div class="word-cat">${cat}</div>
@@ -525,7 +816,9 @@ function renderWordList() {
 function updateWordCount() { const el = document.getElementById('word-count'); if (el) el.textContent = words.length; }
 window.deleteWord = async id => { setSyncStatus('syncing'); await deleteDoc(doc(db, 'words', id)); delete audioFiles[id]; showToast('Carte supprimée'); };
 
-// Edit modal
+// ═══════════════════════════════════════════
+// EDIT MODAL
+// ═══════════════════════════════════════════
 window.openEditModal = id => {
   const w = words.find(x => x._id === id); if (!w) return;
   editingId = id; editSelectedMain = w.main; editSelectedSub = w.sub || '';
@@ -542,8 +835,7 @@ function renderEditPicker(sel) {
 }
 function renderEditSubs(main) {
   const catObj = categories.find(c => c.main === main);
-  const grp = document.getElementById('edit-sub-cat-group');
-  const el = document.getElementById('edit-sub-cat-picker');
+  const grp = document.getElementById('edit-sub-cat-group'), el = document.getElementById('edit-sub-cat-picker');
   if (catObj && catObj.subs.length > 0) {
     grp.style.display = '';
     el.innerHTML = catObj.subs.map(s => `<button class="cat-pill ${editSelectedSub === s ? 'selected' : ''}" onclick="editPickSub('${s}')">${s}</button>`).join('');
@@ -564,7 +856,9 @@ window.saveEdit = async () => {
   window.closeEditModal(); showToast('Carte modifiée !');
 };
 
-// Cat tree
+// ═══════════════════════════════════════════
+// CAT TREE
+// ═══════════════════════════════════════════
 function renderCatTree() {
   const tree = document.getElementById('cat-tree'); if (!tree) return;
   tree.innerHTML = categories.map(c => `
@@ -592,17 +886,24 @@ window.deleteSub = async (main, sub) => {
   const cat = categories.find(c => c.main === main); if (!cat) return;
   setSyncStatus('syncing');
   await updateDoc(doc(db, 'categories', main), { subs: cat.subs.filter(s => s !== sub) });
-  const affected = words.filter(w => w.main === main && w.sub === sub);
-  for (const w of affected) await updateDoc(doc(db, 'words', w._id), { sub: '' });
+  for (const w of words.filter(w => w.main === main && w.sub === sub))
+    await updateDoc(doc(db, 'words', w._id), { sub: '' });
   showToast(`"${sub}" supprimée`);
 };
 
-// Toast
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+initUsername();
 </script>
 </body>
 </html>
