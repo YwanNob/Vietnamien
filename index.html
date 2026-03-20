@@ -191,10 +191,10 @@
 <div class="username-screen" id="username-screen">
   <div class="username-box">
     <div class="logo">Học tiếng Việt</div>
-    <h2>Qui es-tu ?</h2>
-    <p>Choisis un pseudo pour suivre ta progression.<br>Utilise le même sur tous tes appareils.</p>
-    <input type="text" id="username-input" placeholder="ton prénom..." maxlength="20" onkeydown="if(event.key==='Enter')confirmUsername()" />
-    <button onclick="confirmUsername()">Commencer →</button>
+    <h2>Who are you?</h2>
+    <p>Choose a username to track your progress.<br>Use the same on all your devices.</p>
+    <input type="text" id="username-input" placeholder="your name..." maxlength="20" onkeydown="if(event.key==='Enter')confirmUsername()" />
+    <button onclick="confirmUsername()">Start →</button>
   </div>
 </div>
 
@@ -202,76 +202,76 @@
   <header>
     <div class="logo">Học tiếng Việt</div>
     <h1>Mes <em>flashcards</em><br>vietnamiennes</h1>
-    <p class="subtitle">Répétition espacée · Audio · Synchronisé</p>
+    <p class="subtitle">Spaced repetition · Audio · Synced</p>
   </header>
 
   <div class="top-bar">
     <div class="sync-bar">
       <div class="sync-dot syncing" id="sync-dot"></div>
-      <span id="sync-label">Connexion...</span>
+      <span id="sync-label">Connecting...</span>
     </div>
     <div class="user-pill" onclick="changeUser()" id="user-pill">👤 <span id="user-display">...</span></div>
   </div>
 
   <nav class="nav-tabs">
-    <button class="nav-tab active" onclick="switchView('study', this)">Étudier</button>
-    <button class="nav-tab" onclick="switchView('manage', this)">Mes mots</button>
-    <button class="nav-tab" onclick="switchView('categories', this)">Catégories</button>
+    <button class="nav-tab active" onclick="switchView('study', this)">Study</button>
+    <button class="nav-tab" onclick="switchView('manage', this)">My words</button>
+    <button class="nav-tab" onclick="switchView('categories', this)">Categories</button>
   </nav>
 
   <div class="view active" id="view-study">
     <div class="controls" id="mode-controls">
       <button class="toggle-btn active" id="btn-viet-fr" onclick="setMode('viet-fr')">🇻🇳 → 🇫🇷</button>
       <button class="toggle-btn" id="btn-fr-viet" onclick="setMode('fr-viet')">🇫🇷 → 🇻🇳</button>
-      <button class="toggle-btn" id="btn-random" onclick="setMode('random')">Aléatoire</button>
+      <button class="toggle-btn" id="btn-random" onclick="setMode('random')">Random</button>
     </div>
     <div class="controls" id="main-cat-filters"></div>
     <div class="controls" id="sub-cat-filters" style="margin-top:-16px;"></div>
     <div class="cat-breadcrumb" id="cat-breadcrumb"></div>
     <div class="stats">
-      <div class="stat"><div class="stat-num" id="stat-correct">0</div><div class="stat-label">Connus</div></div>
+      <div class="stat"><div class="stat-num" id="stat-correct">0</div><div class="stat-label">Known</div></div>
       <div class="stat-divider"></div>
-      <div class="stat"><div class="stat-num" id="stat-wrong">0</div><div class="stat-label">À revoir</div></div>
+      <div class="stat"><div class="stat-num" id="stat-wrong">0</div><div class="stat-label">To review</div></div>
       <div class="stat-divider"></div>
-      <div class="stat"><div class="stat-num" id="stat-remaining">0</div><div class="stat-label">Restants</div></div>
+      <div class="stat"><div class="stat-num" id="stat-remaining">0</div><div class="stat-label">Remaining</div></div>
     </div>
     <div class="progress-wrap">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-text" id="progress-text">0 / 0</div>
     </div>
-    <div id="study-area"><div class="loading-screen"><div class="spinner"></div><p>Chargement...</p></div></div>
+    <div id="study-area"><div class="loading-screen"><div class="spinner"></div><p>Loading...</p></div></div>
   </div>
 
   <div class="view" id="view-manage">
     <div class="add-section">
-      <div class="section-sep" style="margin-bottom:24px"><div class="sep-line"></div><span>Ajouter un mot</span><div class="sep-line"></div></div>
+      <div class="section-sep" style="margin-bottom:24px"><div class="sep-line"></div><span>Add a word</span><div class="sep-line"></div></div>
       <div class="form-grid">
-        <div class="form-group"><label>Vietnamien</label><input type="text" id="inp-viet" placeholder="xin chào" /></div>
-        <div class="form-group"><label>Français</label><input type="text" id="inp-fr" placeholder="bonjour" /></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Romanisation (optionnel)</label><input type="text" id="inp-roman" placeholder="sin tchào" /></div>
+        <div class="form-group"><label>Vietnamese</label><input type="text" id="inp-viet" placeholder="xin chào" /></div>
+        <div class="form-group"><label>English</label><input type="text" id="inp-fr" placeholder="hello" /></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Romanization (optional)</label><input type="text" id="inp-roman" placeholder="sin tchào" /></div>
       </div>
-      <div class="form-group" style="margin-bottom:12px"><label>Catégorie principale</label><div class="cat-selector" id="main-cat-picker"></div></div>
-      <div class="form-group" id="sub-cat-group" style="margin-bottom:16px;display:none"><label>Sous-catégorie</label><div class="cat-selector" id="sub-cat-picker"></div></div>
+      <div class="form-group" style="margin-bottom:12px"><label>Main category</label><div class="cat-selector" id="main-cat-picker"></div></div>
+      <div class="form-group" id="sub-cat-group" style="margin-bottom:16px;display:none"><label>Subcategory</label><div class="cat-selector" id="sub-cat-picker"></div></div>
       <div class="form-row">
         <label class="audio-upload-label" for="audioFileInput">
           <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-          Audio natif
+          Native audio
         </label>
         <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioFile(this)" />
-        <span class="audio-filename" id="audio-filename">Aucun fichier — stocké sur Cloudinary</span>
+        <span class="audio-filename" id="audio-filename">No file — stored on Cloudinary</span>
       </div>
-      <button class="btn-add" id="btn-add-word" onclick="addWord()">Ajouter la carte</button>
+      <button class="btn-add" id="btn-add-word" onclick="addWord()">Add card</button>
     </div>
 
     <div class="csv-section">
-      <div class="section-sep" style="margin-bottom:20px"><div class="sep-line"></div><span>Importer plusieurs mots (CSV)</span><div class="sep-line"></div></div>
+      <div class="section-sep" style="margin-bottom:20px"><div class="sep-line"></div><span>Import multiple words (CSV)</span><div class="sep-line"></div></div>
       <div class="csv-drop" id="csv-drop" onclick="document.getElementById('csvFileInput').click()"
         ondragover="event.preventDefault();this.classList.add('drag')"
         ondragleave="this.classList.remove('drag')"
         ondrop="handleCsvDrop(event)">
-        <p>📄 Clique ou glisse un fichier <strong>.csv</strong><br><br>
-        Format : <strong>vietnamien, français, romanisation, catégorie, sous-catégorie</strong><br>
-        <small style="opacity:.6">Exemple : Xin chào, Bonjour, sin tchào, expressions,</small></p>
+        <p>📄 Click or drop a file <strong>.csv</strong><br><br>
+        Format: <strong>Vietnamese, English, romanization, category, subcategory</strong><br>
+        <small style="opacity:.6">Example: Xin chào, Hello, sin tchào, expressions,</small></p>
       </div>
       <input type="file" id="csvFileInput" accept=".csv" onchange="handleCsvFile(this)" />
       <div id="csv-preview" class="csv-preview" style="display:none"></div>
@@ -280,13 +280,13 @@
 
     <div class="controls" style="justify-content:flex-start;margin-bottom:16px" id="manage-main-filters"></div>
     <div class="controls" style="justify-content:flex-start;margin-bottom:20px" id="manage-sub-filters"></div>
-    <div class="section-sep"><div class="sep-line"></div><span>Mes cartes (<span id="word-count">0</span>)</span><div class="sep-line"></div></div>
+    <div class="section-sep"><div class="sep-line"></div><span>My cards (<span id="word-count">0</span>)</span><div class="sep-line"></div></div>
     <div class="word-list" id="word-list"></div>
   </div>
 
   <div class="view" id="view-categories">
     <div class="cat-manager">
-      <div class="section-sep" style="margin-bottom:20px"><div class="sep-line"></div><span>Gérer les catégories</span><div class="sep-line"></div></div>
+      <div class="section-sep" style="margin-bottom:20px"><div class="sep-line"></div><span>Manage categories</span><div class="sep-line"></div></div>
       <div class="cat-tree" id="cat-tree"></div>
     </div>
   </div>
@@ -294,25 +294,25 @@
 
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
-    <div class="modal-title">Modifier la carte</div>
+    <div class="modal-title">Edit card</div>
     <div class="form-grid">
-      <div class="form-group"><label>Vietnamien</label><input type="text" id="edit-viet" /></div>
-      <div class="form-group"><label>Français</label><input type="text" id="edit-fr" /></div>
+      <div class="form-group"><label>Vietnamese</label><input type="text" id="edit-viet" /></div>
+      <div class="form-group"><label>English</label><input type="text" id="edit-fr" /></div>
       <div class="form-group" style="grid-column:1/-1"><label>Romanisation</label><input type="text" id="edit-roman" /></div>
     </div>
-    <div class="form-group" style="margin-bottom:8px"><label>Catégorie principale</label><div class="cat-selector" id="edit-main-cat-picker"></div></div>
-    <div class="form-group" id="edit-sub-cat-group" style="margin-bottom:16px;display:none"><label>Sous-catégorie</label><div class="cat-selector" id="edit-sub-cat-picker"></div></div>
+    <div class="form-group" style="margin-bottom:8px"><label>Main category</label><div class="cat-selector" id="edit-main-cat-picker"></div></div>
+    <div class="form-group" id="edit-sub-cat-group" style="margin-bottom:16px;display:none"><label>Subcategory</label><div class="cat-selector" id="edit-sub-cat-picker"></div></div>
     <div class="form-row" style="margin-top:8px">
       <label class="audio-upload-label" for="editAudioFileInput">
         <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-        Remplacer l'audio
+        Replace audio
       </label>
       <input type="file" id="editAudioFileInput" accept="audio/*" style="display:none" onchange="handleEditAudioFile(this)" />
-      <span class="audio-filename" id="edit-audio-filename">inchangé</span>
+      <span class="audio-filename" id="edit-audio-filename">unchanged</span>
     </div>
     <div class="modal-actions">
-      <button class="btn-modal-cancel" onclick="closeEditModal()">Annuler</button>
-      <button class="btn-modal-save" onclick="saveEdit()">Enregistrer</button>
+      <button class="btn-modal-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-modal-save" onclick="saveEdit()">Save</button>
     </div>
   </div>
 </div>
@@ -388,13 +388,13 @@ window.confirmUsername = () => {
   loadScores();
 };
 window.changeUser = () => {
-  const n = prompt('Changer de pseudo :', username);
+  const n = prompt('Change username:', username);
   if (n && n.trim()) {
     username = n.trim();
     localStorage.setItem('viet_username', username);
     document.getElementById('user-display').textContent = username;
     loadScores();
-    showToast('Pseudo changé !');
+    showToast('Username changed!');
   }
 };
 
@@ -431,7 +431,7 @@ function scorePips(id) {
 // ═══════════════════════════════════════════
 function setSyncStatus(s) {
   document.getElementById('sync-dot').className = 'sync-dot ' + s;
-  document.getElementById('sync-label').textContent = s === 'ok' ? 'Synchronisé' : s === 'syncing' ? 'Synchronisation...' : 'Hors ligne';
+  document.getElementById('sync-label').textContent = s === 'ok' ? 'Synced' : s === 'syncing' ? 'Syncing...' : 'Offline';
 }
 
 // ═══════════════════════════════════════════
@@ -560,10 +560,10 @@ function updateStats() {
 
 function renderCard() {
   const area = document.getElementById('study-area'); if (!area) return;
-  if (!dbReady) { area.innerHTML = `<div class="loading-screen"><div class="spinner"></div><p>Chargement...</p></div>`; return; }
-  if (!deck.length) { area.innerHTML = `<div class="empty-card"><p>Aucun mot ici.<br>Ajoute des mots dans <strong>Mes mots</strong>.</p></div>`; return; }
+  if (!dbReady) { area.innerHTML = `<div class="loading-screen"><div class="spinner"></div><p>Loading...</p></div>`; return; }
+  if (!deck.length) { area.innerHTML = `<div class="empty-card"><p>Aucun mot ici.<br>Ajoute des mots dans <strong>My words</strong>.</p></div>`; return; }
   if (currentIndex >= deck.length) {
-    area.innerHTML = `<div class="completed"><h2>Terminé !</h2><p>${correct} connus · ${wrong} à revoir</p><p class="score-recap">Les mots difficiles reviendront en priorité.</p><button class="btn-restart" onclick="startSession()">Recommencer</button></div>`;
+    area.innerHTML = `<div class="completed"><h2>Done!</h2><p>${correct} connus · ${wrong} à revoir</p><p class="score-recap">Hard words will come first next time.</p><button class="btn-restart" onclick="startSession()">Restart</button></div>`;
     return;
   }
   const w = deck[currentIndex];
@@ -575,28 +575,28 @@ function renderCard() {
   area.innerHTML = `
     <div class="card-area"><div class="card" id="flashcard" onclick="flipCard()">
       <div class="card-face card-front">
-        <div class="card-lang-badge ${sv ? 'badge-viet' : 'badge-fr'}">${sv ? 'Vietnamien' : 'Français'}</div>
+        <div class="card-lang-badge ${sv ? 'badge-viet' : 'badge-fr'}">${sv ? 'Vietnamese' : 'English'}</div>
         ${scorePips(w._id)}
         <div class="card-word">${sv ? w.viet : w.fr}</div>
         ${sv && w.roman ? `<div class="card-romanization">${w.roman}</div>` : ''}
         <div class="card-category">${cat}</div>
         <button class="audio-btn" id="play-btn" onclick="playAudio(event,'${safeUrl}','${safe}')">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-          ${w.audioUrl ? 'Écouter (natif)' : 'Écouter (synthèse)'}
+          ${w.audioUrl ? 'Listen (native)' : 'Listen (synth)'}
         </button>
-        <div class="card-hint">Cliquer pour retourner</div>
+        <div class="card-hint">Click to flip</div>
       </div>
       <div class="card-face card-back">
-        <div class="card-lang-badge ${sv ? 'badge-fr' : 'badge-viet'}">${sv ? 'Français' : 'Vietnamien'}</div>
+        <div class="card-lang-badge ${sv ? 'badge-fr' : 'badge-viet'}">${sv ? 'English' : 'Vietnamese'}</div>
         <div class="card-word">${sv ? w.fr : w.viet}</div>
         ${!sv && w.roman ? `<div class="card-romanization">${w.roman}</div>` : ''}
-        <div class="card-hint">Comment tu t'en es sorti ?</div>
+        <div class="card-hint">How did you do?</div>
       </div>
     </div></div>
     <div class="actions">
-      <button class="btn btn-wrong" onclick="answer(false)">✗ À revoir</button>
-      <button class="btn btn-skip" onclick="answer(null)">→ Passer</button>
-      <button class="btn btn-correct" onclick="answer(true)">✓ Connu</button>
+      <button class="btn btn-wrong" onclick="answer(false)">✗ To review</button>
+      <button class="btn btn-skip" onclick="answer(null)">→ Skip</button>
+      <button class="btn btn-correct" onclick="answer(true)">✓ Known</button>
     </div>`;
 }
 
@@ -683,14 +683,14 @@ window.handleCsvDrop = e => {
 };
 function previewCsv(text) {
   csvParsed = parseCSV(text);
-  if (!csvParsed.length) { showToast('Fichier vide ou mal formaté'); return; }
+  if (!csvParsed.length) { showToast('Empty or badly formatted file'); return; }
   const preview = document.getElementById('csv-preview');
   const btn = document.getElementById('btn-import');
   preview.style.display = ''; btn.style.display = '';
-  btn.textContent = `Importer ${csvParsed.length} mot${csvParsed.length > 1 ? 's' : ''}`;
+  btn.textContent = `Import ${csvParsed.length} word${csvParsed.length > 1 ? 's' : ''}`;
   preview.innerHTML = csvParsed.slice(0, 8).map(r =>
     `<div class="csv-row"><div class="cv">${r.viet}</div><div class="cf">${r.fr}</div><div class="cc">${r.main}${r.sub ? ' › '+r.sub : ''}</div></div>`
-  ).join('') + (csvParsed.length > 8 ? `<div class="csv-row" style="color:var(--text-muted);font-size:12px">... et ${csvParsed.length - 8} autres</div>` : '');
+  ).join('') + (csvParsed.length > 8 ? `<div class="csv-row" style="color:var(--text-muted);font-size:12px">... and ${csvParsed.length - 8} more</div>` : '');
 }
 window.importCsv = async () => {
   if (!csvParsed.length) return;
@@ -700,7 +700,7 @@ window.importCsv = async () => {
   document.getElementById('csv-preview').style.display = 'none';
   document.getElementById('btn-import').style.display = 'none';
   document.getElementById('csvFileInput').value = '';
-  showToast('Mots importés !');
+  showToast('Words imported!');
 };
 
 // ═══════════════════════════════════════════
@@ -746,28 +746,28 @@ window.addWord = async () => {
   const viet = document.getElementById('inp-viet').value.trim();
   const fr = document.getElementById('inp-fr').value.trim();
   const roman = document.getElementById('inp-roman').value.trim();
-  if (!viet || !fr) { showToast('Remplis au moins le vietnamien et le français'); return; }
-  if (!selectedMainCat) { showToast('Choisis une catégorie'); return; }
+  if (!viet || !fr) { showToast('Fill in at least Vietnamese and English'); return; }
+  if (!selectedMainCat) { showToast('Choose a category'); return; }
   const btn = document.getElementById('btn-add-word');
-  btn.disabled = true; btn.textContent = 'Ajout en cours...';
+  btn.disabled = true; btn.textContent = 'Adding...';
   setSyncStatus('syncing');
   let audioUrl = '';
   if (pendingAudioFile) {
     try {
-      showToast('Upload audio en cours...');
+      showToast('Uploading audio...');
       audioUrl = await uploadToCloudinary(pendingAudioFile);
-    } catch(e) { showToast('Erreur upload audio'); }
+    } catch(e) { showToast('Audio upload error'); }
     pendingAudioFile = null;
   }
   await addDoc(collection(db, 'words'), { viet, fr, roman, main: selectedMainCat, sub: selectedSubCat, audioUrl, createdAt: Date.now() });
   ['inp-viet','inp-fr','inp-roman'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('audio-filename').textContent = 'Aucun fichier — stocké sur Cloudinary';
+  document.getElementById('audio-filename').textContent = 'No file — stored on Cloudinary';
   document.getElementById('audioFileInput').value = '';
   selectedMainCat = ''; selectedSubCat = '';
   renderMainCatPicker('');
   document.getElementById('sub-cat-group').style.display = 'none';
-  btn.disabled = false; btn.textContent = 'Ajouter la carte';
-  showToast('Carte ajoutée !');
+  btn.disabled = false; btn.textContent = 'Add card';
+  showToast('Card added!');
 };
 
 // ═══════════════════════════════════════════
@@ -781,7 +781,7 @@ function renderWordList() {
     return true;
   });
   const list = document.getElementById('word-list'); if (!list) return;
-  if (!filtered.length) { list.innerHTML = '<div class="empty-card"><p>Aucune carte ici.</p></div>'; updateWordCount(); return; }
+  if (!filtered.length) { list.innerHTML = '<div class="empty-card"><p>No cards here.</p></div>'; updateWordCount(); return; }
   list.innerHTML = filtered.map(w => {
     const cat = w.sub ? `${w.main} › ${w.sub}` : w.main;
     const safe = (w.viet || '').replace(/'/g, "\\'");
@@ -802,7 +802,7 @@ function renderWordList() {
   updateWordCount();
 }
 function updateWordCount() { const el = document.getElementById('word-count'); if (el) el.textContent = words.length; }
-window.deleteWord = async id => { setSyncStatus('syncing'); await deleteDoc(doc(db, 'words', id)); showToast('Carte supprimée'); };
+window.deleteWord = async id => { setSyncStatus('syncing'); await deleteDoc(doc(db, 'words', id)); showToast('Card deleted'); };
 
 // ═══════════════════════════════════════════
 // EDIT MODAL
@@ -814,7 +814,7 @@ window.openEditModal = id => {
   document.getElementById('edit-viet').value = w.viet;
   document.getElementById('edit-fr').value = w.fr;
   document.getElementById('edit-roman').value = w.roman || '';
-  document.getElementById('edit-audio-filename').textContent = w.audioUrl ? '🎵 audio existant' : 'aucun audio';
+  document.getElementById('edit-audio-filename').textContent = w.audioUrl ? '🎵 existing audio' : 'no audio';
   document.getElementById('editAudioFileInput').value = '';
   renderEditPicker(editSelectedMain);
   document.getElementById('edit-modal').classList.add('open');
@@ -842,9 +842,9 @@ window.saveEdit = async () => {
   let audioUrl = w?.audioUrl || '';
   if (editPendingAudioFile) {
     try {
-      showToast('Upload audio en cours...');
+      showToast('Uploading audio...');
       audioUrl = await uploadToCloudinary(editPendingAudioFile);
-    } catch(e) { showToast('Erreur upload audio'); }
+    } catch(e) { showToast('Audio upload error'); }
   }
   await updateDoc(doc(db, 'words', editingId), {
     viet: document.getElementById('edit-viet').value.trim(),
@@ -852,7 +852,7 @@ window.saveEdit = async () => {
     roman: document.getElementById('edit-roman').value.trim(),
     main: editSelectedMain, sub: editSelectedSub, audioUrl
   });
-  window.closeEditModal(); showToast('Carte modifiée !');
+  window.closeEditModal(); showToast('Card updated!');
 };
 
 // ═══════════════════════════════════════════
@@ -866,8 +866,8 @@ function renderCatTree() {
       <div class="cat-subs">
         ${c.subs.map(s => `<div class="sub-tag">${s}<button onclick="deleteSub('${c.main}','${s}')">×</button></div>`).join('')}
         ${c.main === 'vocabulaire'
-          ? `<div class="add-sub-inline"><input type="text" id="new-sub-${c.main}" placeholder="nouvelle sous-cat..." onkeydown="if(event.key==='Enter')addSub('${c.main}')"/><button onclick="addSub('${c.main}')">+ Ajouter</button></div>`
-          : `<span style="font-size:12px;color:var(--text-muted);font-style:italic">Pas de sous-catégories</span>`}
+          ? `<div class="add-sub-inline"><input type="text" id="new-sub-${c.main}" placeholder="new subcat..." onkeydown="if(event.key==='Enter')addSub('${c.main}')"/><button onclick="addSub('${c.main}')">+ Add</button></div>`
+          : `<span style="font-size:12px;color:var(--text-muted);font-style:italic">No subcategories</span>`}
       </div>
     </div>
     <div style="height:1px;background:var(--border);margin:4px 0"></div>`).join('');
@@ -876,10 +876,10 @@ window.addSub = async main => {
   const input = document.getElementById(`new-sub-${main}`);
   const val = input.value.trim().toLowerCase(); if (!val) return;
   const cat = categories.find(c => c.main === main);
-  if (!cat || cat.subs.includes(val)) { showToast('Existe déjà'); return; }
+  if (!cat || cat.subs.includes(val)) { showToast('Already exists'); return; }
   setSyncStatus('syncing');
   await updateDoc(doc(db, 'categories', main), { subs: [...cat.subs, val] });
-  input.value = ''; showToast(`"${val}" ajoutée`);
+  input.value = ''; showToast(`"${val}" added`);
 };
 window.deleteSub = async (main, sub) => {
   const cat = categories.find(c => c.main === main); if (!cat) return;
@@ -887,7 +887,7 @@ window.deleteSub = async (main, sub) => {
   await updateDoc(doc(db, 'categories', main), { subs: cat.subs.filter(s => s !== sub) });
   for (const w of words.filter(w => w.main === main && w.sub === sub))
     await updateDoc(doc(db, 'words', w._id), { sub: '' });
-  showToast(`"${sub}" supprimée`);
+  showToast(`"${sub}" deleted`);
 };
 
 // ═══════════════════════════════════════════
