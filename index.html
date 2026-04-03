@@ -184,6 +184,75 @@
   .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); border-radius: 100px; padding: 12px 24px; font-size: 13px; color: var(--text-soft); transition: transform 0.3s ease; z-index: 500; }
   .toast.show { transform: translateX(-50%) translateY(0); }
   @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .actions { flex-wrap: wrap; } .btn { max-width: none; } }
+
+  /* Mobile polish */
+  @media (max-width: 600px) {
+    .app { padding: 28px 16px 72px; }
+
+    header { margin-bottom: 24px; }
+    .subtitle { font-size: 13px; }
+
+    .top-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+    .sync-bar { justify-content: center; }
+    .user-pill { text-align: center; }
+
+    .nav-tabs {
+      width: 100%;
+      justify-content: space-between;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab { flex: 1; padding: 10px 12px; }
+
+    .controls { gap: 8px; }
+    .toggle-btn { padding: 9px 14px; }
+
+    .stats { flex-wrap: wrap; gap: 14px; }
+    .stat-divider { display: none; }
+
+    .card { min-height: 260px; }
+    .card-face { padding: 44px 18px; }
+    .card-lang-badge { left: 16px; top: 16px; }
+    .score-pips { right: 16px; top: 16px; }
+    .card-hint { bottom: 16px; }
+
+    .actions { gap: 10px; margin-bottom: 36px; }
+    .btn { padding: 14px 14px; }
+    .btn-skip { max-width: none; }
+
+    .add-section { padding: 22px; }
+    .csv-section { padding: 20px; }
+    .csv-drop { padding: 20px; }
+
+    .csv-row { flex-wrap: wrap; }
+    .csv-row .cv { min-width: 0; }
+
+    .word-item { flex-wrap: wrap; gap: 10px; }
+    .word-viet { min-width: 0; flex: 1 1 auto; }
+    .word-fr { flex: 1 1 100%; }
+    .word-cat { white-space: normal; }
+    .word-actions { margin-left: auto; }
+
+    .cat-main-row { flex-wrap: wrap; }
+    .cat-main-label { min-width: 0; width: 100%; }
+    .cat-subs { width: 100%; }
+
+    .modal { padding: 22px; }
+    .modal-actions { flex-wrap: wrap; }
+    .btn-modal-cancel { flex: 1; }
+
+    .toast { width: calc(100% - 32px); max-width: 520px; text-align: center; }
+  }
+
+  @media (max-width: 380px) {
+    .app { padding: 22px 12px 64px; }
+    .username-box { padding: 36px 20px; }
+    .card-face { padding: 42px 14px; }
+    .audio-btn { padding: 10px 14px; }
+    .nav-tab { font-size: 12px; }
+  }
 </style>
 </head>
 <body>
