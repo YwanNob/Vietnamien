@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiếng Việt — Flashcards</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f; --surface: #181819; --surface2: #222224; --border: #2e2e30;
+    --accent: #d4a853; --accent2: #c17d3c; --text: #f0ede8;
+    --text-muted: #7a7875; --text-soft: #b0ada8; --viet: #e8c97a; --fr: #a8c4e8; --radius: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 20% 20%, rgba(212,168,83,0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(168,196,232,0.04) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+  .app { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .username-screen { position: fixed; inset: 0; background: var(--bg); z-index: 400; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .username-screen.hidden { display: none; }
+  .username-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 48px 40px; max-width: 380px; width: 100%; text-align: center; }
+  .username-box .logo { font-family: 'Playfair Display', serif; font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+  .username-box h2 { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--text); margin-bottom: 10px; }
+  .username-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
+  .username-box input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; text-align: center; margin-bottom: 14px; transition: border-color 0.2s; }
+  .username-box input:focus { border-color: var(--accent); }
+  .username-box button { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #0e0e0f; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+  header { text-align: center; margin-bottom: 32px; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 44px); font-weight: 700; color: var(--text); line-height: 1.1; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .subtitle { margin-top: 10px; font-size: 14px; color: var(--text-muted); font-weight: 300; }
+
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .sync-bar { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); transition: background 0.3s; }
+  .sync-dot.ok { background: #7ae8a0; }
+  .sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
+  .sync-dot.error { background: #e87a7a; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .user-pill { font-size: 12px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 5px 14px; cursor: pointer; transition: border-color 0.2s; }
+  .user-pill:hover { border-color: var(--accent); color: var(--accent); }
+  .user-pill span { color: var(--accent); font-weight: 600; }
+
+  .nav-tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 4px; margin-bottom: 40px; width: fit-content; margin-left: auto; margin-right: auto; }
+  .nav-tab { padding: 9px 20px; border-radius: 10px; border: none; background: transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .nav-tab.active { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .view { display: none; } .view.active { display: block; }
+
+  .controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 28px; flex-wrap: wrap; align-items: center; }
+  .toggle-btn { padding: 9px 20px; border-radius: 100px; border: 1.5px solid var(--border); background: transparent; color: var(--text-soft); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .toggle-btn.active { background: var(--accent); border-color: var(--accent); color: #0e0e0f; font-weight: 600; }
+  .toggle-btn.sub { font-size: 12px; padding: 7px 16px; border-style: dashed; }
+  .toggle-btn.sub.active { background: rgba(212,168,83,0.15); color: var(--accent); border-style: solid; }
+  .cat-breadcrumb { display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 12px; font-size: 12px; color: var(--text-muted); min-height: 20px; }
+  .cat-breadcrumb span { color: var(--accent); font-weight: 500; }
+
+  .stats { display: flex; gap: 24px; justify-content: center; margin-bottom: 36px; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-top: 2px; }
+  .stat-divider { width: 1px; background: var(--border); align-self: stretch; }
+
+  .progress-wrap { margin-bottom: 40px; }
+  .progress-bar { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.5s ease; }
+  .progress-text { text-align: right; font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  .card-area { perspective: 1200px; margin-bottom: 32px; }
+  .card { position: relative; width: 100%; min-height: 320px; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+  .card.flipped { transform: rotateY(180deg); }
+  .card-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 40px; transition: border-color 0.2s; }
+  .card-face:hover { border-color: rgba(212,168,83,0.3); }
+  .card-back { transform: rotateY(180deg); background: var(--surface2); }
+  .card-face::before { content: ''; position: absolute; top: 0; right: 0; width: 80px; height: 80px; background: radial-gradient(circle at top right, rgba(212,168,83,0.08), transparent 70%); border-radius: 0 var(--radius) 0 0; }
+  .card-lang-badge { position: absolute; top: 20px; left: 24px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; padding: 4px 10px; border-radius: 100px; border: 1px solid; }
+  .badge-viet { color: var(--viet); border-color: rgba(232,201,122,0.25); background: rgba(232,201,122,0.06); }
+  .badge-fr { color: var(--fr); border-color: rgba(168,196,232,0.25); background: rgba(168,196,232,0.06); }
+  .score-pips { position: absolute; top: 20px; right: 24px; display: flex; gap: 4px; }
+  .pip { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+  .pip.green { background: #7ae8a0; } .pip.red { background: #e87a7a; }
+  .card-word { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 42px); font-weight: 700; text-align: center; line-height: 1.2; margin-bottom: 12px; }
+  .card-front .card-word { color: var(--viet); } .card-back .card-word { color: var(--fr); }
+  .card-romanization { font-size: 15px; color: var(--text-muted); font-style: italic; margin-bottom: 8px; font-family: 'Playfair Display', serif; }
+  .card-category { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+  .card-hint { position: absolute; bottom: 20px; font-size: 11px; color: var(--text-muted); }
+  .audio-btn { margin-top: 20px; display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--text-soft); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .audio-btn:hover, .audio-btn.playing { border-color: var(--accent); color: var(--accent); background: rgba(212,168,83,0.08); }
+  .audio-btn svg { width: 14px; height: 14px; fill: currentColor; }
+  .audio-btn.uploading { border-color: var(--accent); color: var(--accent); opacity: 0.6; cursor: wait; }
+
+  .actions { display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; }
+  .btn { flex: 1; max-width: 180px; padding: 14px 24px; border-radius: var(--radius); border: 1.5px solid var(--border); background: transparent; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-wrong { color: #e87a7a; border-color: rgba(232,122,122,0.3); } .btn-wrong:hover { background: rgba(232,122,122,0.1); border-color: #e87a7a; }
+  .btn-correct { color: #7ae8a0; border-color: rgba(122,232,160,0.3); } .btn-correct:hover { background: rgba(122,232,160,0.1); border-color: #7ae8a0; }
+  .btn-skip { color: var(--text-muted); border-color: var(--border); max-width: 100px; }
+
+  .section-sep { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .section-sep span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); white-space: nowrap; }
+  .sep-line { flex: 1; height: 1px; background: var(--border); }
+
+  .add-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 16px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+  .form-group input { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; }
+  .form-group input:focus { border-color: var(--accent); }
+  .cat-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .cat-pill { padding: 7px 14px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .cat-pill:hover { border-color: var(--accent); color: var(--accent); }
+  .cat-pill.selected { background: rgba(212,168,83,0.12); color: var(--accent); border-color: var(--accent); }
+  .form-row { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .audio-upload-label { display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px; border: 1px dashed var(--border); color: var(--text-muted); font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .audio-upload-label:hover { border-color: var(--accent); color: var(--accent); }
+  .audio-upload-label svg { width: 14px; height: 14px; fill: currentColor; }
+  #audioFileInput { display: none; }
+  .audio-filename { font-size: 12px; color: var(--text-soft); font-style: italic; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-add { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #0e0e0f; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+  .btn-add:hover { opacity: 0.9; }
+  .btn-add:disabled { opacity: 0.5; cursor: wait; }
+
+  .csv-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; }
+  .csv-drop { border: 2px dashed var(--border); border-radius: 12px; padding: 28px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
+  .csv-drop:hover, .csv-drop.drag { border-color: var(--accent); background: rgba(212,168,83,0.04); }
+  .csv-drop p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .csv-drop p strong { color: var(--accent); }
+  #csvFileInput { display: none; }
+  .csv-preview { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; margin-bottom: 16px; }
+  .csv-row { display: flex; gap: 12px; padding: 8px 12px; background: var(--surface2); border-radius: 8px; font-size: 13px; }
+  .csv-row .cv { color: var(--viet); min-width: 100px; font-family: 'Playfair Display', serif; }
+  .csv-row .cf { color: var(--text-soft); flex: 1; }
+  .csv-row .cc { color: var(--text-muted); font-size: 11px; }
+  .btn-import { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-import:hover { background: rgba(212,168,83,0.1); }
+
+  .word-list { display: flex; flex-direction: column; gap: 8px; }
+  .word-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; }
+  .word-item:hover { border-color: rgba(212,168,83,0.2); }
+  .word-viet { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--viet); min-width: 110px; }
+  .word-fr { font-size: 13px; color: var(--text-soft); flex: 1; }
+  .word-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 3px 8px; border: 1px solid var(--border); border-radius: 100px; white-space: nowrap; }
+  .word-actions { display: flex; gap: 6px; }
+  .word-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 6px; transition: color 0.2s; display: flex; align-items: center; }
+  .word-btn:hover { color: var(--accent); } .word-btn.delete:hover { color: #e87a7a; }
+  .word-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+  .cat-manager { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; }
+  .cat-tree { display: flex; flex-direction: column; gap: 12px; }
+  .cat-main-row { display: flex; align-items: center; gap: 10px; }
+  .cat-main-label { font-size: 13px; font-weight: 600; color: var(--accent); min-width: 110px; text-transform: capitalize; }
+  .cat-subs { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
+  .sub-tag { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; border: 1px solid var(--border); background: var(--surface2); font-size: 12px; color: var(--text-soft); }
+  .sub-tag button { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 14px; line-height: 1; padding: 0; transition: color 0.2s; }
+  .sub-tag button:hover { color: #e87a7a; }
+  .add-sub-inline { display: flex; align-items: center; gap: 6px; }
+  .add-sub-inline input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; width: 130px; transition: border-color 0.2s; }
+  .add-sub-inline input:focus { border-color: var(--accent); }
+  .add-sub-inline button { padding: 5px 12px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+  .loading-screen { text-align: center; padding: 80px 40px; }
+  .loading-screen p { color: var(--text-muted); font-size: 14px; margin-top: 16px; }
+  .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty-card { text-align: center; padding: 60px 40px; color: var(--text-muted); }
+  .empty-card p { font-size: 14px; line-height: 1.6; }
+  .completed { text-align: center; padding: 60px 40px; }
+  .completed h2 { font-family: 'Playfair Display', serif; font-size: 36px; color: var(--accent); margin-bottom: 12px; }
+  .completed p { color: var(--text-muted); font-size: 15px; margin-bottom: 8px; }
+  .completed .score-recap { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+  .btn-restart { padding: 14px 32px; border-radius: 100px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+  .btn-restart:hover { background: var(--accent); color: #0e0e0f; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; width: 100%; max-width: 500px; transform: translateY(20px); transition: transform 0.2s; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--accent); margin-bottom: 24px; }
+  .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+  .btn-modal-save { flex: 1; padding: 12px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #0e0e0f; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-modal-cancel { padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; }
+
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); border-radius: 100px; padding: 12px 24px; font-size: 13px; color: var(--text-soft); transition: transform 0.3s ease; z-index: 500; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .actions { flex-wrap: wrap; } .btn { max-width: none; } }
+</style>
+</head>
+<body>
+
+<div class="username-screen" id="username-screen">
+  <div class="username-box">
+    <div class="logo">Học tiếng Việt</div>
+    <h2>Who are you?</h2>
+    <p>Choose a username to track your progress.<br>Use the same on all your devices.</p>
+    <input type="text" id="username-input" placeholder="your name..." maxlength="20" onkeydown="if(event.key==='Enter')confirmUsername()" />
+    <button onclick="confirmUsername()">Start →</button>
+  </div>
+</div>
+
+<div class="app">
+  <header>
+    <div class="logo">Học tiếng Việt</div>
+    <h1>My <em>vietnamese</em><br>flashcards</h1>
+    <p class="subtitle">Spaced repetition · Audio · Synced</p>
+  </header>
+
+  <div class="top-bar">
+    <div class="sync-bar">
+      <div class="sync-dot syncing" id="sync-dot"></div>
+      <span id="sync-label">Connecting...</span>
+    </div>
+    <div class="user-pill" onclick="changeUser()" id="user-pill">👤 <span id="user-display">...</span></div>
+  </div>
+
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchView('study', this)">Study</button>
+    <button class="nav-tab" onclick="switchView('manage', this)">My words</button>
+    <button class="nav-tab" onclick="switchView('categories', this)">Categories</button>
+  </nav>
+
+  <div class="view active" id="view-study">
+    <div class="controls" id="mode-controls">
+      <button class="toggle-btn active" id="btn-viet-eng" onclick="setMode('viet-eng')">🇻🇳 → 🇬🇧</button>
+      <button class="toggle-btn" id="btn-eng-viet" onclick="setMode('eng-viet')">🇬🇧 → 🇻🇳</button>
+      <button class="toggle-btn" id="btn-random" onclick="setMode('random')">Random</button>
+    </div>
+    <div class="controls" id="main-cat-filters"></div>
+    <div class="controls" id="sub-cat-filters" style="margin-top:-16px;"></div>
+    <div class="cat-breadcrumb" id="cat-breadcrumb"></div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="stat-correct">0</div><div class="stat-label">Known</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><div class="stat-num" id="stat-wrong">0</div><div class="stat-label">To review</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><div class="stat-num" id="stat-remaining">0</div><div class="stat-label">Remaining</div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-text" id="progress-text">0 / 0</div>
+    </div>
+    <div id="study-area"><div class="loading-screen"><div class="spinner"></div><p>Loading...</p></div></div>
+  </div>
+
+  <div class="view" id="view-manage">
+    <div class="add-section">
+      <div class="section-sep" style="margin-bottom:24px"><div class="sep-line"></div><span>Add a word</span><div class="sep-line"></div></div>
+      <div class="form-grid">
+        <div class="form-group"><label>Vietnamese</label><input type="text" id="inp-viet" placeholder="xin chào" /></div>
+        <div class="form-group"><label>English</label><input type="text" id="inp-fr" placeholder="hello" /></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Romanization (optional)</label><input type="text" id="inp-roman" placeholder="sin tchào" /></div>
+      </div>
+      <div class="form-group" style="margin-bottom:12px"><label>Main category</label><div class="cat-selector" id="main-cat-picker"></div></div>
+      <div class="form-group" id="sub-cat-group" style="margin-bottom:16px;display:none"><label>Subcategory</label><div class="cat-selector" id="sub-cat-picker"></div></div>
+      <div class="form-row">
+        <label class="audio-upload-label" for="audioFileInput">
+          <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+          Native audio
+        </label>
+        <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioFile(this)" />
+        <span class="audio-filename" id="audio-filename">No file — stored on Cloudinary</span>
+      </div>
+      <button class="btn-add" id="btn-add-word" onclick="addWord()">Add card</button>
+    </div>
+
+    <div class="csv-section">
+      <div class="section-sep" style="margin-bottom:20px"><div class="sep-line"></div><span>Import multiple words (CSV)</span><div class="sep-line"></div></div>
+      <div class="csv-drop" id="csv-drop" onclick="document.getElementById('csvFileInput').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleCsvDrop(event)">
+        <p>📄 Click or drop a file <strong>.csv</strong><br><br>
+        Format: <strong>Vietnamese, English, romanization, category, subcategory</strong><br>
+        <small style="opacity:.6">Example: Xin chào, Hello, sin tchào, expressions,</small></p>
+      </div>
+      <input type="file" id="csvFileInput" accept=".csv" onchange="handleCsvFile(this)" />
+      <div id="csv-preview" class="csv-preview" style="display:none"></div>
+      <button class="btn-import" id="btn-import" style="display:none" onclick="importCsv()">Importer les mots</button>
+    </div>
+
+    <div class="controls" style="justify-content:flex-start;margin-bottom:16px" id="manage-main-filters"></div>
+    <div class="controls" style="justify-content:flex-start;margin-bottom:20px" id="manage-sub-filters"></div>
+    <div class="section-sep"><div class="sep-line"></div><span>My cards (<span id="word-count">0</span>)</span><div class="sep-line"></div></div>
+    <div class="word-list" id="word-list"></div>
+  </div>
+
+  <div class="view" id="view-categories">
+    <div class="cat-manager">
+      <div class="section-sep" style="margin-bottom:20px"><div class="sep-line"></div><span>Manage categories</span><div class="sep-line"></div></div>
+      <div class="cat-tree" id="cat-tree"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title">Edit card</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Vietnamese</label><input type="text" id="edit-viet" /></div>
+      <div class="form-group"><label>English</label><input type="text" id="edit-fr" /></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Romanisation</label><input type="text" id="edit-roman" /></div>
+    </div>
+    <div class="form-group" style="margin-bottom:8px"><label>Main category</label><div class="cat-selector" id="edit-main-cat-picker"></div></div>
+    <div class="form-group" id="edit-sub-cat-group" style="margin-bottom:16px;display:none"><label>Subcategory</label><div class="cat-selector" id="edit-sub-cat-picker"></div></div>
+    <div class="form-row" style="margin-top:8px">
+      <label class="audio-upload-label" for="editAudioFileInput">
+        <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        Replace audio
+      </label>
+      <input type="file" id="editAudioFileInput" accept="audio/*" style="display:none" onchange="handleEditAudioFile(this)" />
+      <span class="audio-filename" id="edit-audio-filename">unchanged</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-modal-save" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDeu2oIs5ZMhCniCuCZmG0tz1MT8p_-2ho",
+  authDomain: "viet-flashcards.firebaseapp.com",
+  projectId: "viet-flashcards",
+  storageBucket: "viet-flashcards.firebasestorage.app",
+  messagingSenderId: "764070119844",
+  appId: "1:764070119844:web:0c9090dcaf6916a0929931"
+};
+
+// Cloudinary config
+const CLOUDINARY_CLOUD = 'dnfyowjso';
+const CLOUDINARY_PRESET = 'Learn Viet';
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`;
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
+const FIXED_CATS = ['verbes', 'expressions', 'vocabulaire'];
+let categories = [], words = [], scores = {};
+let mode = 'viet-fr';
+let activeCatMain = 'tout', activeCatSub = '';
+let manageCatMain = 'tout', manageCatSub = '';
+let selectedMainCat = '', selectedSubCat = '';
+let editSelectedMain = '', editSelectedSub = '';
+let deck = [], currentIndex = 0, correct = 0, wrong = 0;
+let currentAudio = null, editingId = null, dbReady = false;
+let username = localStorage.getItem('viet_username') || '';
+let csvParsed = [];
+let pendingAudioFile = null;
+let editPendingAudioFile = null;
+
+// ═══════════════════════════════════════════
+// CLOUDINARY UPLOAD
+// ═══════════════════════════════════════════
+async function uploadToCloudinary(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+  formData.append('folder', 'viet-flashcards');
+  const res = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+  if (!res.ok) throw new Error('Upload Cloudinary échoué');
+  const data = await res.json();
+  return data.secure_url; // URL permanente
+}
+
+// ═══════════════════════════════════════════
+// USERNAME
+// ═══════════════════════════════════════════
+function initUsername() {
+  if (username) {
+    document.getElementById('username-screen').classList.add('hidden');
+    document.getElementById('user-display').textContent = username;
+    loadScores();
+  }
+}
+window.confirmUsername = () => {
+  const val = document.getElementById('username-input').value.trim();
+  if (!val) return;
+  username = val;
+  localStorage.setItem('viet_username', username);
+  document.getElementById('username-screen').classList.add('hidden');
+  document.getElementById('user-display').textContent = username;
+  loadScores();
+};
+window.changeUser = () => {
+  const n = prompt('Change username:', username);
+  if (n && n.trim()) {
+    username = n.trim();
+    localStorage.setItem('viet_username', username);
+    document.getElementById('user-display').textContent = username;
+    loadScores();
+    showToast('Username changed!');
+  }
+};
+
+// ═══════════════════════════════════════════
+// SCORES
+// ═══════════════════════════════════════════
+function loadScores() {
+  if (!username) return;
+  onSnapshot(collection(db, 'scores', username, 'words'), snap => {
+    scores = {};
+    snap.docs.forEach(d => { scores[d.id] = d.data().score || 0; });
+    renderAll();
+  });
+}
+async function updateScore(wordId, delta) {
+  if (!username) return;
+  const next = Math.max(-5, Math.min(10, (scores[wordId] || 0) + delta));
+  scores[wordId] = next;
+  await setDoc(doc(db, 'scores', username, 'words', wordId), { score: next });
+}
+function getScore(id) { return scores[id] || 0; }
+function scorePips(id) {
+  const s = getScore(id);
+  let html = '';
+  for (let i = 0; i < 5; i++) {
+    if (s >= 0) html += `<div class="pip ${i < s ? 'green' : ''}"></div>`;
+    else html += `<div class="pip ${i < -s ? 'red' : ''}"></div>`;
+  }
+  return `<div class="score-pips">${html}</div>`;
+}
+
+// ═══════════════════════════════════════════
+// SYNC
+// ═══════════════════════════════════════════
+function setSyncStatus(s) {
+  document.getElementById('sync-dot').className = 'sync-dot ' + s;
+  document.getElementById('sync-label').textContent = s === 'ok' ? 'Synced' : s === 'syncing' ? 'Syncing...' : 'Offline';
+}
+
+// ═══════════════════════════════════════════
+// FIRESTORE LISTENERS
+// ═══════════════════════════════════════════
+onSnapshot(collection(db, 'words'), async snap => {
+  if (snap.empty && !dbReady) {
+    const defaults = [
+      { viet: 'Xin chào', fr: 'Bonjour', roman: 'sin tchào', main: 'expressions', sub: '', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Cảm ơn', fr: 'Merci', roman: 'gàm ơn', main: 'expressions', sub: '', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Tạm biệt', fr: 'Au revoir', roman: 'tàm biệt', main: 'expressions', sub: '', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Vâng', fr: 'Oui', roman: 'vâng', main: 'expressions', sub: '', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Không', fr: 'Non', roman: 'khong', main: 'expressions', sub: '', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Gia đình', fr: 'Famille', roman: 'gia dinh', main: 'vocabulaire', sub: 'famille', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Mẹ', fr: 'Maman', roman: 'mè', main: 'vocabulaire', sub: 'famille', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Bố', fr: 'Papa', roman: 'bố', main: 'vocabulaire', sub: 'famille', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Ăn', fr: 'Manger', roman: 'ăn', main: 'verbes', sub: '', audioUrl: '', createdAt: Date.now() },
+      { viet: 'Uống', fr: 'Boire', roman: 'uống', main: 'verbes', sub: '', audioUrl: '', createdAt: Date.now() },
+    ];
+    for (const w of defaults) await addDoc(collection(db, 'words'), w);
+    return;
+  }
+  words = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+  dbReady = true;
+  setSyncStatus('ok');
+  renderAll();
+}, () => setSyncStatus('error'));
+
+onSnapshot(collection(db, 'categories'), async snap => {
+  if (snap.empty) {
+    const defaults = [
+      { main: 'verbes', subs: [] },
+      { main: 'expressions', subs: [] },
+      { main: 'vocabulaire', subs: ['famille', 'nourriture', 'couleurs', 'chiffres'] }
+    ];
+    for (const c of defaults) await setDoc(doc(db, 'categories', c.main), c);
+    return;
+  }
+  categories = snap.docs.map(d => d.data());
+  categories.sort((a, b) => FIXED_CATS.indexOf(a.main) - FIXED_CATS.indexOf(b.main));
+  renderAll();
+});
+
+function renderAll() {
+  if (!dbReady || !username) return;
+  renderStudyCatFilters();
+  startSession();
+  renderWordList();
+  updateWordCount();
+  renderMainCatPicker();
+  renderManageCatFilters();
+  if (document.getElementById('view-categories').classList.contains('active')) renderCatTree();
+}
+
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
+window.switchView = (v, el) => {
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  el.classList.add('active');
+  if (v === 'study') { renderStudyCatFilters(); startSession(); }
+  if (v === 'manage') { renderManageCatFilters(); renderWordList(); renderMainCatPicker(); }
+  if (v === 'categories') renderCatTree();
+};
+window.setMode = m => {
+  mode = m;
+  document.querySelectorAll('#mode-controls .toggle-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + m).classList.add('active');
+  startSession();
+};
+
+// ═══════════════════════════════════════════
+// STUDY FILTERS
+// ═══════════════════════════════════════════
+function renderStudyCatFilters() {
+  const mainEl = document.getElementById('main-cat-filters'); if (!mainEl) return;
+  mainEl.innerHTML = ['tout', ...categories.map(c => c.main)].map(m =>
+    `<button class="toggle-btn ${activeCatMain === m ? 'active' : ''}" onclick="setStudyMain('${m}')">${m === 'tout' ? 'Tout' : m}</button>`).join('');
+  const subEl = document.getElementById('sub-cat-filters');
+  const catObj = categories.find(c => c.main === activeCatMain);
+  subEl.innerHTML = catObj && catObj.subs.length > 0
+    ? ['tout', ...catObj.subs].map(s =>
+        `<button class="toggle-btn sub ${(s === 'tout' && !activeCatSub) || activeCatSub === s ? 'active' : ''}" onclick="setStudySub('${s}')">${s === 'tout' ? 'Toutes' : s}</button>`).join('')
+    : '';
+  const bc = document.getElementById('cat-breadcrumb');
+  bc.innerHTML = activeCatMain === 'tout' ? '' :
+    `<span>${activeCatMain}</span>` + (activeCatSub ? `<span style="opacity:.4">›</span><span>${activeCatSub}</span>` : '');
+}
+window.setStudyMain = m => { activeCatMain = m; activeCatSub = ''; renderStudyCatFilters(); startSession(); };
+window.setStudySub = s => { activeCatSub = s === 'tout' ? '' : s; renderStudyCatFilters(); startSession(); };
+
+// ═══════════════════════════════════════════
+// SESSION
+// ═══════════════════════════════════════════
+function getFiltered() {
+  return words.filter(w => {
+    if (activeCatMain === 'tout') return true;
+    if (w.main !== activeCatMain) return false;
+    if (activeCatSub && w.sub !== activeCatSub) return false;
+    return true;
+  });
+}
+function startSession() {
+  const filtered = getFiltered();
+  filtered.sort((a, b) => {
+    const sa = getScore(a._id), sb = getScore(b._id);
+    if (sa !== sb) return sa - sb;
+    return Math.random() - 0.5;
+  });
+  deck = filtered;
+  currentIndex = 0; correct = 0; wrong = 0;
+  updateStats(); renderCard();
+}
+window.startSession = startSession;
+
+function updateStats() {
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-remaining').textContent = Math.max(0, deck.length - currentIndex);
+  const pct = deck.length ? Math.round((currentIndex / deck.length) * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = currentIndex + ' / ' + deck.length;
+}
+
+function renderCard() {
+  const area = document.getElementById('study-area'); if (!area) return;
+  if (!dbReady) { area.innerHTML = `<div class="loading-screen"><div class="spinner"></div><p>Loading...</p></div>`; return; }
+  if (!deck.length) { area.innerHTML = `<div class="empty-card"><p>Aucun mot ici.<br>Ajoute des mots dans <strong>My words</strong>.</p></div>`; return; }
+  if (currentIndex >= deck.length) {
+    area.innerHTML = `<div class="completed"><h2>Done!</h2><p>${correct} connus · ${wrong} à revoir</p><p class="score-recap">Hard words will come first next time.</p><button class="btn-restart" onclick="startSession()">Restart</button></div>`;
+    return;
+  }
+  const w = deck[currentIndex];
+  const em = mode === 'random' ? (Math.random() > 0.5 ? 'viet-fr' : 'fr-viet') : mode;
+  const sv = em === 'viet-fr';
+  const cat = w.sub ? `${w.main} › ${w.sub}` : w.main;
+  const safe = (w.viet || '').replace(/'/g, "\\'");
+  const safeUrl = (w.audioUrl || '').replace(/'/g, "\\'");
+  area.innerHTML = `
+    <div class="card-area"><div class="card" id="flashcard" onclick="flipCard()">
+      <div class="card-face card-front">
+        <div class="card-lang-badge ${sv ? 'badge-viet' : 'badge-fr'}">${sv ? 'Vietnamese' : 'English'}</div>
+        ${scorePips(w._id)}
+        <div class="card-word">${sv ? w.viet : w.fr}</div>
+        ${sv && w.roman ? `<div class="card-romanization">${w.roman}</div>` : ''}
+        <div class="card-category">${cat}</div>
+        <button class="audio-btn" id="play-btn" onclick="playAudio(event,'${safeUrl}','${safe}')">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          ${w.audioUrl ? 'Listen (native)' : 'Listen (synth)'}
+        </button>
+        <div class="card-hint">Click to flip</div>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-lang-badge ${sv ? 'badge-fr' : 'badge-viet'}">${sv ? 'English' : 'Vietnamese'}</div>
+        <div class="card-word">${sv ? w.fr : w.viet}</div>
+        ${!sv && w.roman ? `<div class="card-romanization">${w.roman}</div>` : ''}
+        <div class="card-hint">How did you do?</div>
+      </div>
+    </div></div>
+    <div class="actions">
+      <button class="btn btn-wrong" onclick="answer(false)">✗ To review</button>
+      <button class="btn btn-skip" onclick="answer(null)">→ Skip</button>
+      <button class="btn btn-correct" onclick="answer(true)">✓ Known</button>
+    </div>`;
+}
+
+window.flipCard = () => document.getElementById('flashcard').classList.toggle('flipped');
+window.answer = async result => {
+  const w = deck[currentIndex];
+  if (result === true) { correct++; await updateScore(w._id, +1); }
+  else if (result === false) { wrong++; await updateScore(w._id, -1); }
+  currentIndex++; updateStats(); renderCard();
+};
+
+// ═══════════════════════════════════════════
+// AUDIO — Cloudinary URL ou synthèse vi-VN
+// ═══════════════════════════════════════════
+window.playAudio = (e, audioUrl, vietText) => {
+  e.stopPropagation();
+  const btn = document.getElementById('play-btn');
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (audioUrl) {
+    currentAudio = new Audio(audioUrl);
+    if (btn) btn.classList.add('playing');
+    currentAudio.play().catch(() => speakVietnamese(vietText, btn));
+    currentAudio.onended = () => { if (btn) btn.classList.remove('playing'); };
+  } else {
+    speakVietnamese(vietText, btn);
+  }
+};
+
+function speakVietnamese(text, btn) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'vi-VN';
+  const voices = speechSynthesis.getVoices();
+  const viVoice = voices.find(v => v.lang.startsWith('vi'));
+  if (viVoice) utter.voice = viVoice;
+  utter.rate = 0.85;
+  if (btn) btn.classList.add('playing');
+  utter.onend = () => { if (btn) btn.classList.remove('playing'); };
+  speechSynthesis.speak(utter);
+}
+
+window.playWordAudio = (audioUrl, vietText) => {
+  if (currentAudio) currentAudio.pause();
+  if (audioUrl) {
+    currentAudio = new Audio(audioUrl);
+    currentAudio.play();
+  } else {
+    speakVietnamese(vietText, null);
+  }
+};
+
+window.handleAudioFile = input => {
+  const f = input.files[0]; if (!f) return;
+  pendingAudioFile = f;
+  document.getElementById('audio-filename').textContent = `${f.name} → sera uploadé sur Cloudinary`;
+};
+
+window.handleEditAudioFile = input => {
+  const f = input.files[0]; if (!f) return;
+  editPendingAudioFile = f;
+  document.getElementById('edit-audio-filename').textContent = f.name;
+};
+
+// ═══════════════════════════════════════════
+// CSV
+// ═══════════════════════════════════════════
+function parseCSV(text) {
+  return text.trim().split('\n').filter(l => l.trim()).map(line => {
+    const p = line.split(',').map(x => x.trim());
+    return { viet: p[0]||'', fr: p[1]||'', roman: p[2]||'', main: (p[3]||'expressions').toLowerCase(), sub: (p[4]||'').toLowerCase() };
+  }).filter(r => r.viet && r.fr);
+}
+window.handleCsvFile = input => {
+  const f = input.files[0]; if (!f) return;
+  new FileReader().onload = e => previewCsv(e.target.result);
+  const r = new FileReader(); r.onload = e => previewCsv(e.target.result); r.readAsText(f);
+};
+window.handleCsvDrop = e => {
+  e.preventDefault();
+  document.getElementById('csv-drop').classList.remove('drag');
+  const f = e.dataTransfer.files[0]; if (!f) return;
+  const r = new FileReader(); r.onload = ev => previewCsv(ev.target.result); r.readAsText(f);
+};
+function previewCsv(text) {
+  csvParsed = parseCSV(text);
+  if (!csvParsed.length) { showToast('Empty or badly formatted file'); return; }
+  const preview = document.getElementById('csv-preview');
+  const btn = document.getElementById('btn-import');
+  preview.style.display = ''; btn.style.display = '';
+  btn.textContent = `Import ${csvParsed.length} word${csvParsed.length > 1 ? 's' : ''}`;
+  preview.innerHTML = csvParsed.slice(0, 8).map(r =>
+    `<div class="csv-row"><div class="cv">${r.viet}</div><div class="cf">${r.fr}</div><div class="cc">${r.main}${r.sub ? ' › '+r.sub : ''}</div></div>`
+  ).join('') + (csvParsed.length > 8 ? `<div class="csv-row" style="color:var(--text-muted);font-size:12px">... and ${csvParsed.length - 8} more</div>` : '');
+}
+window.importCsv = async () => {
+  if (!csvParsed.length) return;
+  setSyncStatus('syncing');
+  for (const w of csvParsed) await addDoc(collection(db, 'words'), { ...w, audioUrl: '', createdAt: Date.now() });
+  csvParsed = [];
+  document.getElementById('csv-preview').style.display = 'none';
+  document.getElementById('btn-import').style.display = 'none';
+  document.getElementById('csvFileInput').value = '';
+  showToast('Words imported!');
+};
+
+// ═══════════════════════════════════════════
+// MANAGE FILTERS
+// ═══════════════════════════════════════════
+function renderManageCatFilters() {
+  const mainEl = document.getElementById('manage-main-filters'); if (!mainEl) return;
+  mainEl.innerHTML = ['tout', ...categories.map(c => c.main)].map(m =>
+    `<button class="toggle-btn ${manageCatMain === m ? 'active' : ''}" onclick="setManageMain('${m}')">${m === 'tout' ? 'Tout' : m}</button>`).join('');
+  const subEl = document.getElementById('manage-sub-filters');
+  const catObj = categories.find(c => c.main === manageCatMain);
+  subEl.innerHTML = catObj && catObj.subs.length > 0
+    ? ['tout', ...catObj.subs].map(s =>
+        `<button class="toggle-btn sub ${(s === 'tout' && !manageCatSub) || manageCatSub === s ? 'active' : ''}" onclick="setManageSub('${s}')">${s === 'tout' ? 'Toutes' : s}</button>`).join('')
+    : '';
+}
+window.setManageMain = m => { manageCatMain = m; manageCatSub = ''; renderManageCatFilters(); renderWordList(); };
+window.setManageSub = s => { manageCatSub = s === 'tout' ? '' : s; renderManageCatFilters(); renderWordList(); };
+
+// ═══════════════════════════════════════════
+// WORD FORM
+// ═══════════════════════════════════════════
+function renderMainCatPicker(sel) {
+  sel = sel !== undefined ? sel : selectedMainCat;
+  const el = document.getElementById('main-cat-picker'); if (!el) return;
+  el.innerHTML = categories.map(c => `<button class="cat-pill ${sel === c.main ? 'selected' : ''}" onclick="pickMainCat('${c.main}')">${c.main}</button>`).join('');
+}
+window.pickMainCat = m => {
+  selectedMainCat = m; selectedSubCat = ''; renderMainCatPicker(m);
+  const catObj = categories.find(c => c.main === m);
+  const grp = document.getElementById('sub-cat-group'), sp = document.getElementById('sub-cat-picker');
+  if (catObj && catObj.subs.length > 0) {
+    grp.style.display = '';
+    sp.innerHTML = catObj.subs.map(s => `<button class="cat-pill" onclick="pickSubCat('${s}')">${s}</button>`).join('');
+  } else { grp.style.display = 'none'; sp.innerHTML = ''; }
+};
+window.pickSubCat = s => {
+  selectedSubCat = s;
+  document.getElementById('sub-cat-picker').querySelectorAll('.cat-pill').forEach(p => p.classList.toggle('selected', p.textContent.trim() === s));
+};
+
+window.addWord = async () => {
+  const viet = document.getElementById('inp-viet').value.trim();
+  const fr = document.getElementById('inp-fr').value.trim();
+  const roman = document.getElementById('inp-roman').value.trim();
+  if (!viet || !fr) { showToast('Fill in at least Vietnamese and English'); return; }
+  if (!selectedMainCat) { showToast('Choose a category'); return; }
+  const btn = document.getElementById('btn-add-word');
+  btn.disabled = true; btn.textContent = 'Adding...';
+  setSyncStatus('syncing');
+  let audioUrl = '';
+  if (pendingAudioFile) {
+    try {
+      showToast('Uploading audio...');
+      audioUrl = await uploadToCloudinary(pendingAudioFile);
+    } catch(e) { showToast('Audio upload error'); }
+    pendingAudioFile = null;
+  }
+  await addDoc(collection(db, 'words'), { viet, fr, roman, main: selectedMainCat, sub: selectedSubCat, audioUrl, createdAt: Date.now() });
+  ['inp-viet','inp-fr','inp-roman'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('audio-filename').textContent = 'No file — stored on Cloudinary';
+  document.getElementById('audioFileInput').value = '';
+  selectedMainCat = ''; selectedSubCat = '';
+  renderMainCatPicker('');
+  document.getElementById('sub-cat-group').style.display = 'none';
+  btn.disabled = false; btn.textContent = 'Add card';
+  showToast('Card added!');
+};
+
+// ═══════════════════════════════════════════
+// WORD LIST
+// ═══════════════════════════════════════════
+function renderWordList() {
+  const filtered = words.filter(w => {
+    if (manageCatMain === 'tout') return true;
+    if (w.main !== manageCatMain) return false;
+    if (manageCatSub && w.sub !== manageCatSub) return false;
+    return true;
+  });
+  const list = document.getElementById('word-list'); if (!list) return;
+  if (!filtered.length) { list.innerHTML = '<div class="empty-card"><p>No cards here.</p></div>'; updateWordCount(); return; }
+  list.innerHTML = filtered.map(w => {
+    const cat = w.sub ? `${w.main} › ${w.sub}` : w.main;
+    const safe = (w.viet || '').replace(/'/g, "\\'");
+    const safeUrl = (w.audioUrl || '').replace(/'/g, "\\'");
+    const s = getScore(w._id);
+    const sc = s > 0 ? '#7ae8a0' : s < 0 ? '#e87a7a' : 'var(--text-muted)';
+    return `<div class="word-item">
+      <div style="font-size:11px;color:${sc};min-width:24px;text-align:center;font-weight:600">${s > 0 ? '+' : ''}${s}</div>
+      <div class="word-viet">${w.viet}</div>
+      <div class="word-fr">${w.fr}</div>
+      <div class="word-cat">${cat}${w.audioUrl ? ' 🎵' : ''}</div>
+      <div class="word-actions">
+        <button class="word-btn" onclick="playWordAudio('${safeUrl}','${safe}')"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
+        <button class="word-btn" onclick="openEditModal('${w._id}')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+        <button class="word-btn delete" onclick="deleteWord('${w._id}')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+      </div>
+    </div>`;}).join('');
+  updateWordCount();
+}
+function updateWordCount() { const el = document.getElementById('word-count'); if (el) el.textContent = words.length; }
+window.deleteWord = async id => { setSyncStatus('syncing'); await deleteDoc(doc(db, 'words', id)); showToast('Card deleted'); };
+
+// ═══════════════════════════════════════════
+// EDIT MODAL
+// ═══════════════════════════════════════════
+window.openEditModal = id => {
+  const w = words.find(x => x._id === id); if (!w) return;
+  editingId = id; editSelectedMain = w.main; editSelectedSub = w.sub || '';
+  editPendingAudioFile = null;
+  document.getElementById('edit-viet').value = w.viet;
+  document.getElementById('edit-fr').value = w.fr;
+  document.getElementById('edit-roman').value = w.roman || '';
+  document.getElementById('edit-audio-filename').textContent = w.audioUrl ? '🎵 existing audio' : 'no audio';
+  document.getElementById('editAudioFileInput').value = '';
+  renderEditPicker(editSelectedMain);
+  document.getElementById('edit-modal').classList.add('open');
+};
+function renderEditPicker(sel) {
+  document.getElementById('edit-main-cat-picker').innerHTML = categories.map(c =>
+    `<button class="cat-pill ${sel === c.main ? 'selected' : ''}" onclick="editPickMain('${c.main}')">${c.main}</button>`).join('');
+  renderEditSubs(sel);
+}
+function renderEditSubs(main) {
+  const catObj = categories.find(c => c.main === main);
+  const grp = document.getElementById('edit-sub-cat-group'), el = document.getElementById('edit-sub-cat-picker');
+  if (catObj && catObj.subs.length > 0) {
+    grp.style.display = '';
+    el.innerHTML = catObj.subs.map(s => `<button class="cat-pill ${editSelectedSub === s ? 'selected' : ''}" onclick="editPickSub('${s}')">${s}</button>`).join('');
+  } else { grp.style.display = 'none'; el.innerHTML = ''; }
+}
+window.editPickMain = m => { editSelectedMain = m; editSelectedSub = ''; renderEditPicker(m); };
+window.editPickSub = s => { editSelectedSub = s; document.getElementById('edit-sub-cat-picker').querySelectorAll('.cat-pill').forEach(p => p.classList.toggle('selected', p.textContent.trim() === s)); };
+window.closeEditModal = () => { document.getElementById('edit-modal').classList.remove('open'); editingId = null; editPendingAudioFile = null; };
+window.saveEdit = async () => {
+  if (!editingId) return;
+  setSyncStatus('syncing');
+  const w = words.find(x => x._id === editingId);
+  let audioUrl = w?.audioUrl || '';
+  if (editPendingAudioFile) {
+    try {
+      showToast('Uploading audio...');
+      audioUrl = await uploadToCloudinary(editPendingAudioFile);
+    } catch(e) { showToast('Audio upload error'); }
+  }
+  await updateDoc(doc(db, 'words', editingId), {
+    viet: document.getElementById('edit-viet').value.trim(),
+    fr: document.getElementById('edit-fr').value.trim(),
+    roman: document.getElementById('edit-roman').value.trim(),
+    main: editSelectedMain, sub: editSelectedSub, audioUrl
+  });
+  window.closeEditModal(); showToast('Card updated!');
+};
+
+// ═══════════════════════════════════════════
+// CAT TREE
+// ═══════════════════════════════════════════
+function renderCatTree() {
+  const tree = document.getElementById('cat-tree'); if (!tree) return;
+  tree.innerHTML = categories.map(c => `
+    <div class="cat-main-row">
+      <div class="cat-main-label">${c.main}</div>
+      <div class="cat-subs">
+        ${c.subs.map(s => `<div class="sub-tag">${s}<button onclick="deleteSub('${c.main}','${s}')">×</button></div>`).join('')}
+        ${c.main === 'vocabulaire'
+          ? `<div class="add-sub-inline"><input type="text" id="new-sub-${c.main}" placeholder="new subcat..." onkeydown="if(event.key==='Enter')addSub('${c.main}')"/><button onclick="addSub('${c.main}')">+ Add</button></div>`
+          : `<span style="font-size:12px;color:var(--text-muted);font-style:italic">No subcategories</span>`}
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:4px 0"></div>`).join('');
+}
+window.addSub = async main => {
+  const input = document.getElementById(`new-sub-${main}`);
+  const val = input.value.trim().toLowerCase(); if (!val) return;
+  const cat = categories.find(c => c.main === main);
+  if (!cat || cat.subs.includes(val)) { showToast('Already exists'); return; }
+  setSyncStatus('syncing');
+  await updateDoc(doc(db, 'categories', main), { subs: [...cat.subs, val] });
+  input.value = ''; showToast(`"${val}" added`);
+};
+window.deleteSub = async (main, sub) => {
+  const cat = categories.find(c => c.main === main); if (!cat) return;
+  setSyncStatus('syncing');
+  await updateDoc(doc(db, 'categories', main), { subs: cat.subs.filter(s => s !== sub) });
+  for (const w of words.filter(w => w.main === main && w.sub === sub))
+    await updateDoc(doc(db, 'words', w._id), { sub: '' });
+  showToast(`"${sub}" deleted`);
+};
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+initUsername();
+</script>
+</body>
+</html>
